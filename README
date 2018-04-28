@@ -1,0 +1,19 @@
+Projekt VehicleEvolution korzysta z dwóch bibliotek zewnętrznych: Box2D oraz SFML. W folderze lib/ dostępne są skrypty pobierające ich kod z repozytorium git oraz kompilujące je.
+
+Sama bilbioteka SFML również wymaga swoich zależności. W systemie Ubuntu 16.04 (czysta instalacja) można je zainstalować np. poprzez polecenie:
+
+sudo apt install libgl1-mesa-dev libx11-dev libxrandr-dev libudev-dev libfreetype6-dev
+
+Po instalacji można wykonać dostarczone skrypty przygotowujące biblioteki:
+
+chmod +x lib/prepare*.sh
+./lib/prepareBox2D.sh
+./lib/prepareSFML.sh
+
+Po powyższym przygotowaniu bibliotek można zbudować właściwy projekt:
+
+mkdir build && cd build
+cmake ..
+make VehicleEvolution
+cd src
+./VehicleEvolution

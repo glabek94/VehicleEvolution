@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 14)
 
 include_directories(../include)
 
-find_library(LIBBOX2D Box2D lib)
-find_library(LIBSFML-GRAPHICS sfml-graphics lib)
-find_library(LIBSFML-WINDOW sfml-window lib)
-find_library(LIBSFML-SYSTEM sfml-system lib)
+find_library(LIBBOX2D Box2D ../lib)
+find_library(LIBSFML-GRAPHICS sfml-graphics ../lib)
+find_library(LIBSFML-WINDOW sfml-window ../lib)
+find_library(LIBSFML-SYSTEM sfml-system ../lib)
 
 add_executable(VehicleEvolution main.cpp Vehicle.cpp ../include/Vehicle.h Application.cpp ../include/Application.h)
 target_link_libraries(VehicleEvolution ${LIBBOX2D})
