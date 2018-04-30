@@ -3,20 +3,36 @@
 //
 
 #include "Application.h"
+#include "Vehicle.h"
 
 void Application::run() {
 
-    CreateGround(world, 400.f, 500.f);
+    sf::RenderWindow window(sf::VideoMode(800, 600, 32), "SFML window");
+    b2Vec2 gravity(0.f, 9.8f);
+    b2World world(gravity);
+    window.setFramerateLimit(60);
+    CreateGround(world, 0.f, 500.f);
+    sf::RectangleShape ground;
+    ground.setFillColor(sf::Color::Black);
+    ground.setSize(sf::Vector2f(800, 16));
+    ground.setPosition(0, 490);
 
-    sf::Texture GroundTexture;
-    sf::Texture BoxTexture;
-    GroundTexture.loadFromFile("../../resources/ground.png");
-    BoxTexture.loadFromFile("../../resources/box.png");
+
+    std::vector<std::pair<float, float>> vertices;
+    vertices.push_back(std::make_pair(0,3));
+    vertices.push_back(std::make_pair(-2,1));
+    vertices.push_back(std::make_pair(-2,-2));
+    vertices.push_back(std::make_pair(2,-2));
+    vertices.push_back(std::make_pair(1,0));
+    vertices.push_back(std::make_pair(2,2));
+
+
+    Vehicle car(vertices, 30, 200, 100, &world);
 
     sf::Event event;
+
     while (window.isOpen()) {
 
-        sf::Event event;
         while (window.pollEvent(event)) {
             switch (event.type) {
                 case sf::Event::Closed:
@@ -25,55 +41,31 @@ void Application::run() {
             }
         }
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
             int MouseX = sf::Mouse::getPosition(window).x;
             int MouseY = sf::Mouse::getPosition(window).y;
             CreateBox(world, MouseX, MouseY);
         }
+
         world.Step(1 / 60.f, 8, 3);
-
         window.clear(sf::Color::White);
-        int BodyCount = 0;
 
-        for (b2Body *BodyIterator = world.GetBodyList(); BodyIterator != 0; BodyIterator = BodyIterator->GetNext()) {
-
-
-            if (BodyIterator->GetType() == b2_dynamicBody) {
-                sf::Sprite Sprite;
-                Sprite.setTexture(BoxTexture);
-                Sprite.setOrigin(16.f, 16.f);
-                Sprite.setPosition(SCALE * BodyIterator->GetPosition().x, SCALE * BodyIterator->GetPosition().y);
-                Sprite.setRotation(BodyIterator->GetAngle() * 180 / b2_pi);
-                window.draw(Sprite);
-                ++BodyCount;
-            } else {
-                sf::Sprite GroundSprite;
-                GroundSprite.setTexture(GroundTexture);
-                GroundSprite.setOrigin(400.f, 8.f);
-                GroundSprite.setPosition(BodyIterator->GetPosition().x * SCALE, BodyIterator->GetPosition().y * SCALE);
-                GroundSprite.setRotation(180 / b2_pi * BodyIterator->GetAngle());
-                window.draw(GroundSprite);
-            }
-
+        for(auto b : boxes){
+            sf::RectangleShape rs;
+            rs.setFillColor(sf::Color::Red);
+            rs.setOrigin(16,16);
+            rs.setSize(sf::Vector2f(32, 32));
+            rs.setPosition(SCALE * b->GetPosition().x, SCALE *b->GetPosition().y);
+            rs.rotate(b->GetAngle() * 180/b2_pi);
+            window.draw(rs);
         }
 
+        window.draw(ground);
+        car.updateShape();
+        window.draw(car.getShape());
         window.display();
     }
-}
-
-void Application::CreateBox(b2World &World, int MouseX, int MouseY) {
-    b2BodyDef BodyDef;
-    BodyDef.position = b2Vec2(MouseX / SCALE, MouseY / SCALE);
-    BodyDef.type = b2_dynamicBody;
-    b2Body *Body = World.CreateBody(&BodyDef);
-
-    b2PolygonShape Shape;
-    Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
-    b2FixtureDef FixtureDef;
-    FixtureDef.density = 1.f;
-    FixtureDef.friction = 0.7f;
-    FixtureDef.shape = &Shape;
-    Body->CreateFixture(&FixtureDef);
 }
 
 void Application::CreateGround(b2World &World, float X, float Y) {
@@ -88,4 +80,21 @@ void Application::CreateGround(b2World &World, float X, float Y) {
     FixtureDef.density = 0.f;
     FixtureDef.shape = &Shape;
     Body->CreateFixture(&FixtureDef);
+}
+
+void Application::CreateBox(b2World& World, int MouseX, int MouseY)
+{
+    b2BodyDef BodyDef;
+    BodyDef.position = b2Vec2(MouseX/SCALE, MouseY/SCALE);
+    BodyDef.type = b2_dynamicBody;
+    b2Body* Body = World.CreateBody(&BodyDef);
+
+    b2PolygonShape Shape;
+    Shape.SetAsBox((32.f/2)/SCALE, (32.f/2)/SCALE);
+    b2FixtureDef FixtureDef;
+    FixtureDef.density = 1.f;
+    FixtureDef.friction = 0.7f;
+    FixtureDef.shape = &Shape;
+    Body->CreateFixture(&FixtureDef);
+    boxes.push_back(Body);
 }
