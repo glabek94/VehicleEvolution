@@ -20,14 +20,14 @@ void Application::run() {
 
     std::vector<std::pair<float, float>> vertices;
     vertices.push_back(std::make_pair(0,3));
-    vertices.push_back(std::make_pair(-2,1));
+    vertices.push_back(std::make_pair(-1.5,1));
     vertices.push_back(std::make_pair(-2,-2));
     vertices.push_back(std::make_pair(2,-2));
     vertices.push_back(std::make_pair(1,0));
     vertices.push_back(std::make_pair(2,2));
 
 
-    Vehicle car(vertices, 30, 200, 100, &world);
+    Vehicle car(vertices, 1.0f, 1.0f, 30, 200, 100, &world);
 
     sf::Event event;
 
@@ -57,13 +57,19 @@ void Application::run() {
             rs.setOrigin(16,16);
             rs.setSize(sf::Vector2f(32, 32));
             rs.setPosition(SCALE * b->GetPosition().x, SCALE *b->GetPosition().y);
+            rs.setOutlineColor(sf::Color::Black);
+            rs.setOutlineThickness(1.0f);
             rs.rotate(b->GetAngle() * 180/b2_pi);
             window.draw(rs);
         }
 
         window.draw(ground);
         car.updateShape();
-        window.draw(car.getShape());
+
+        window.draw(car.getBodyworkShape());
+        window.draw(car.getLeftWheelShape());
+        window.draw(car.getRightWheelShape());
+
         window.display();
     }
 }
