@@ -10,16 +10,13 @@
 #include <utility>
 #include <memory>
 #include <iostream>
+#include "Constants.h"
 
 class Vehicle
 {
 private:
 
-    /*
-     * SCALE should be deleted from this class and moved to another, "global" header - it has to be
-     * the same for every class in the project.
-     */
-    float SCALE;
+
 
     std::vector<std::pair<float, float>> vertices;
 
@@ -63,9 +60,9 @@ public:
     /*
      * vertices_ is vector of vertices representing the body in the Box2D-scale (meters).
      */
-    Vehicle( std::vector<std::pair<float, float>> &vertices_, float leftWheelSize, float rightWheelSize, float SCALE_, float x_, float y_, b2World *world_);
+    Vehicle( std::vector<std::pair<float, float>> &vertices_, float leftWheelSize, float rightWheelSize, float x_, float y_, b2World *world_);
 
-    sf::ConvexShape getBodyworkShape() const;
+    sf::ConvexShape getChassisShape() const;
     sf::CircleShape getLeftWheelShape() const;
     sf::CircleShape getRightWheelShape() const;
     void updateShape();
