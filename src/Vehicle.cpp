@@ -4,7 +4,7 @@
 
 #include "Vehicle.h"
 
-sf::ConvexShape Vehicle::getBodyworkShape() const{
+sf::ConvexShape Vehicle::getChassisShape() const{
     return chassisShape;
 }
 
@@ -34,8 +34,7 @@ void Vehicle::updateShape(){
             chassisShape.getTransform().transformPoint(chassisShape.getPoint(2)).y);
 }
 
-Vehicle::Vehicle(std::vector<std::pair<float, float>>& vertices_, float leftWheelSize, float rightWheelSize, float SCALE_, float x_, float y_, b2World* world_) :
-        SCALE{SCALE_},
+Vehicle::Vehicle(std::vector<std::pair<float, float>>& vertices_, float leftWheelSize, float rightWheelSize, float x_, float y_, b2World* world_) :
         vertices{vertices_},
         world{world_}{
 
@@ -119,8 +118,7 @@ void Vehicle::createBody( float leftWheelSize, float rightWheelSize, float x_, f
     springRight = (b2WheelJoint*) world->CreateJoint(&jointDef);
 }
 
-void
-Vehicle::createShapes( float leftWheelSize, float rightWheelSize, float x_, float y_)  {/*
+void Vehicle::createShapes( float leftWheelSize, float rightWheelSize, float x_, float y_)  {/*
      *  SFML shape creation
      */
 
