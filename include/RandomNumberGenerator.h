@@ -6,6 +6,7 @@
 #define PROJECT_RANDOMNUMBERGENERATOR_H
 
 #include <random>
+#include <algorithm>
 
 class RandomNumberGenerator
 {
@@ -18,7 +19,19 @@ public:
 
     double GetFromNormalDist(double mean = 0.0, double deviation = 1.0)
     {
-        std::normal_distribution dist(mean, deviation);
+        std::normal_distribution<> dist(mean, deviation);
+        return dist(rng);
+    }
+
+    int GetIntFromUniformDist(int min, int max)
+    {
+        std::uniform_int_distribution<int> dist(min, max);
+        return dist(rng);
+    }
+
+    double GetDoubleFromUniformDist(double min, double max)
+    {
+        std::uniform_real_distribution<double> dist(min, max);
         return dist(rng);
     }
 

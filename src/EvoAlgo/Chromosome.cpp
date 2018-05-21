@@ -4,6 +4,9 @@
 
 #include "EvoAlgo/Chromosome.h"
 
+constexpr double Chromosome::BODY_VERTEX_MAX;
+constexpr double Chromosome::WHEEL_SIZE_MAX;
+
 Chromosome::Chromosome() : bodyVertices{VERTICES_NUMBER}, wheelVertices{WHEELS_NUMBER}, wheelSizes{WHEELS_NUMBER}
 {
 }
@@ -24,4 +27,19 @@ Chromosome::Chromosome(std::vector<std::pair<double, double>>& bodyVertices, std
     this->bodyVertices = bodyVertices;
     this->wheelVertices = wheelVertices;
     this->wheelSizes = wheelSizes;
+}
+
+const std::vector<std::pair<double, double>>& Chromosome::getBodyVertices() const
+{
+    return bodyVertices;
+}
+
+const std::vector<int>& Chromosome::getWheelVertices() const
+{
+    return wheelVertices;
+}
+
+const std::vector<double>& Chromosome::getWheelSizes() const
+{
+    return wheelSizes;
 }
