@@ -10,6 +10,7 @@
 #include <utility>
 #include <memory>
 #include <iostream>
+#include <EvoAlgo/Chromosome.h>
 #include "Constants.h"
 
 class Vehicle
@@ -18,7 +19,7 @@ private:
 
 
 
-    std::vector<std::pair<float, float>> vertices;
+    std::vector<std::pair<double, double>> vertices;
 
     /*
      * Naked pointer since b2Bodies are allocated by b2World.
@@ -60,8 +61,9 @@ public:
     /*
      * vertices_ is vector of vertices representing the body in the Box2D-scale (meters).
      */
-    Vehicle( std::vector<std::pair<float, float>> &vertices_, float leftWheelSize, float rightWheelSize, float x_, float y_, b2World *world_);
+    Vehicle( std::vector<std::pair<double, double>> &vertices_, float leftWheelSize, float rightWheelSize, float x_, float y_, b2World *world_);
 
+    Vehicle(const Chromosome& chromosome, float x_, float y_, b2World *world_);
     sf::ConvexShape getChassisShape() const;
     sf::CircleShape getLeftWheelShape() const;
     sf::CircleShape getRightWheelShape() const;
