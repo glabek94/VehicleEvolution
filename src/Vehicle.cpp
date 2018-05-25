@@ -50,48 +50,34 @@ Vehicle::Vehicle(std::vector<std::pair<float, float>>& vertices_, float leftWhee
     createShapes(leftWheelSize, rightWheelSize, x_, y_);
 
     createBody(leftWheelSize, rightWheelSize, x_, y_);
-
-
 }
 
 Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_) : vertices{ chromosome.getBodyVertices()}
 {
-    float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0,
-                                     [](float first, const std::pair<float, float>& second)
+    float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
+                                     [](float acc, const std::pair<float, float>& vrt)
                                      {
-                                         return first += std::get<0>(second);
+                                         return acc += vrt.first;
                                      }) / vertices.size();
 
-    float centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0,
-                                     [](float first, const std::pair<float, float>& second)
+    float centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
+                                     [](float acc, const std::pair<float, float>& vrt)
                                      {
-                                         return first += std::get<1>(second);
+                                         return acc += vrt.second;
                                      }) / vertices.size();
-
-    for (const auto& v : vertices)
-    {
-        std::cout << std::get<0>(v) << ' ' << std::get<1>(v) << std::endl;
-    }
-    std::cout << std::endl;
 
     std::sort(vertices.begin(), vertices.end(),
-              [&](const auto& left, const auto& right)
+              [&](const std::pair<float, float>& left, const std::pair<float, float>& right)
               {
-                  return atan2(std::get<1>(left) - centerY, std::get<0>(left) - centerX) <
-                         atan2(std::get<1>(right) - centerY, std::get<0>(right) - centerX);
+                  return atan2(left.second - centerY, left.first - centerX) <
+                         atan2(right.second - centerY, right.first - centerX);
               });
 
-    for (const auto& v : vertices)
-    {
-        std::cout << std::get<0>(v) << ' ' << std::get<1>(v) << std::endl;
-    }
-    std::cout << std::endl;
 
     auto firstWheelSize = chromosome.getWheelSizes().at(0);
     auto secondWheelSize = chromosome.getWheelSizes().at(1);
     createShapes(firstWheelSize, secondWheelSize, x_, y_);
     createBody(firstWheelSize, secondWheelSize, x_, y_);
-
 }
 
 /*

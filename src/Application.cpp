@@ -2,12 +2,14 @@
 // Created by dawid on 27.04.18.
 //
 
+#include <EvoAlgo/EvolutionaryAlgorithm.h>
 #include "Application.h"
 #include "Vehicle.h"
 #include "GroundChain.h"
 #include "GroundFactory.h"
 
-void Application::run() {
+void Application::run()
+{
 
     sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Vehicle Evolution");
     sf::View view;
@@ -17,16 +19,17 @@ void Application::run() {
     World::getInstance();
 
     std::vector<std::pair<float, float>> vertices;
-    vertices.emplace_back(std::make_pair(0,3));
-    vertices.emplace_back(std::make_pair(-1.1,1));
-    vertices.emplace_back(std::make_pair(-2,-2));
-    vertices.emplace_back(std::make_pair(2,-2));
-    vertices.emplace_back(std::make_pair(1,0));
-    vertices.emplace_back(std::make_pair(2,2));
+    vertices.emplace_back(std::make_pair(0, 3));
+    vertices.emplace_back(std::make_pair(-1.1, 1));
+    vertices.emplace_back(std::make_pair(-2, -2));
+    vertices.emplace_back(std::make_pair(2, -2));
+    vertices.emplace_back(std::make_pair(1, 0));
+    vertices.emplace_back(std::make_pair(2, 2));
 
+    EvolutionaryAlgorithm algo(20, 2, 0.05);
+    //Vehicle car(vertices, 1.0f, 1.0f, 200, -300);
 
-    Vehicle car(vertices, 1.0f, 1.0f, 200, -300);
-
+    Vehicle car(algo.GetCurrentGeneration()[0], 200, -300);
     sf::Event event;
 
 
@@ -65,10 +68,13 @@ void Application::run() {
 
     ground.emplace_back(GroundFactory::getInstance().createGround());
 
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
 
-        while (window.pollEvent(event)) {
-            switch (event.type) {
+        while (window.pollEvent(event))
+        {
+            switch (event.type)
+            {
                 case sf::Event::Closed:
                     window.close();
                     break;
@@ -85,31 +91,36 @@ void Application::run() {
         {
             int MouseX = sf::Mouse::getPosition(window).x;
             int MouseY = sf::Mouse::getPosition(window).y;
-            CreateBox(view.getCenter().x+MouseX-view.getSize().x/2, view.getCenter().y+MouseY-view.getSize().y/2);
+            CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
+                      view.getCenter().y + MouseY - view.getSize().y / 2);
         }
 
-        World::getInstance().step(1 /20.f, 8, 3);
+        World::getInstance().step(1 / 20.f, 8, 3);
         window.clear(sf::Color::White);
 
-        for(auto b : boxes){
+        for (auto b : boxes)
+        {
             sf::RectangleShape rs;
             rs.setFillColor(sf::Color::Red);
-            rs.setOrigin(16,16);
+            rs.setOrigin(16, 16);
             rs.setSize(sf::Vector2f(32, 32));
-            rs.setPosition(SCALE * b->GetPosition().x, SCALE *b->GetPosition().y);
+            rs.setPosition(SCALE * b->GetPosition().x, SCALE * b->GetPosition().y);
             rs.setOutlineColor(sf::Color::Black);
             rs.setOutlineThickness(1.0f);
-            rs.rotate(b->GetAngle() * 180/b2_pi);
+            rs.rotate(b->GetAngle() * 180 / b2_pi);
             window.draw(rs);
         }
 
         // check if new GroundChain needed
-        if(b2Distance(GroundFactory::getInstance().getPreviousChainEnd(), car.getBody()->GetPosition())<20.f){
+        if (b2Distance(GroundFactory::getInstance().getPreviousChainEnd(), car.getBody()->GetPosition()) < 20.f)
+        {
             ground.emplace_back(GroundFactory::getInstance().createGround());
         }
 
-        for(const auto& c : ground)
+        for (const auto& c : ground)
+        {
             window.draw(c->getShapes());
+        }
 
         car.updateShape();
         view.setCenter(car.getChassisShape().getPosition());
@@ -127,9 +138,9 @@ void Application::run() {
 
 void Application::CreateBox(int MouseX, int MouseY)
 {
-    b2Body* Body = World::getInstance().createDynamicBody(MouseX/SCALE, MouseY/SCALE);
+    b2Body* Body = World::getInstance().createDynamicBody(MouseX / SCALE, MouseY / SCALE);
     b2PolygonShape Shape;
-    Shape.SetAsBox((32.f/2)/SCALE, (32.f/2)/SCALE);
+    Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
     b2FixtureDef FixtureDef;
     FixtureDef.density = 1.f;
     FixtureDef.friction = 0.7f;
