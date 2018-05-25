@@ -17,7 +17,7 @@ public:
         return singleton;
     }
 
-    double GetFromNormalDist(double mean = 0.0, double deviation = 1.0)
+    float GetFromNormalDist(float mean = 0.0, float deviation = 1.0)
     {
         std::normal_distribution<> dist(mean, deviation);
         return dist(rng);
@@ -29,9 +29,9 @@ public:
         return dist(rng);
     }
 
-    double GetDoubleFromUniformDist(double min, double max)
+    float GetDoubleFromUniformDist(float min, float max)
     {
-        std::uniform_real_distribution<double> dist(min, max);
+        std::uniform_real_distribution<float> dist(min, max);
         return dist(rng);
     }
 

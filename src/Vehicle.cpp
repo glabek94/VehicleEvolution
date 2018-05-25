@@ -3,6 +3,7 @@
 //
 
 #include <numeric>
+#include <utility>
 #include "Vehicle.h"
 
 sf::ConvexShape Vehicle::getChassisShape() const
@@ -40,7 +41,7 @@ void Vehicle::updateShape()
             chassisShape.getTransform().transformPoint(chassisShape.getPoint(2)).y);
 }
 
-Vehicle::Vehicle(std::vector<std::pair<double, double>>& vertices_, float leftWheelSize, float rightWheelSize, float x_,
+Vehicle::Vehicle(std::vector<std::pair<float, float>>& vertices_, float leftWheelSize, float rightWheelSize, float x_,
                  float y_, b2World* world_) :
         vertices{vertices_},
         world{world_}
@@ -56,14 +57,14 @@ Vehicle::Vehicle(std::vector<std::pair<double, double>>& vertices_, float leftWh
 Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_, b2World* world_) : vertices{
         chromosome.getBodyVertices()}, world{world_}
 {
-    double centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0,
-                                     [](double first, const std::pair<double, double>& second)
+    float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0,
+                                     [](float first, const std::pair<float, float>& second)
                                      {
                                          return first += std::get<0>(second);
                                      }) / vertices.size();
 
-    double centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0,
-                                     [](double first, const std::pair<double, double>& second)
+    float centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0,
+                                     [](float first, const std::pair<float, float>& second)
                                      {
                                          return first += std::get<1>(second);
                                      }) / vertices.size();
@@ -100,14 +101,14 @@ Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_, b2World* worl
 void Vehicle::createBody(float leftWheelSize, float rightWheelSize, float x_, float y_)
 {
 
-    double centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0,
-                                     [](double first, const std::pair<double, double>& second)
+    float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0,
+                                     [](float first, const std::pair<float, float>& second)
                                      {
                                          return first += std::get<0>(second);
                                      }) / vertices.size();
 
-    double centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0,
-                                     [](double first, const std::pair<double, double>& second)
+    float centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0,
+                                     [](float first, const std::pair<float, float>& second)
                                      {
                                          return first += std::get<1>(second);
                                      }) / vertices.size();
@@ -118,11 +119,11 @@ void Vehicle::createBody(float leftWheelSize, float rightWheelSize, float x_, fl
     chassisBody = world->CreateBody(&bodyDef);
 
     /*
-     * Iterate over every vertex and create a triangle fan centered at [0,0]
+     * Iterate over every vertex and create a triangle fan centered at [centerX,centerY]
      */
     for (auto v = vertices.begin(); v != vertices.end(); ++v)
     {
-        std::vector<std::pair<double, double>>::iterator next;
+        std::vector<std::pair<float, float>>::iterator next;
         if (v + 1 != vertices.end())
         {
             next = v + 1;

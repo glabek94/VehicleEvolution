@@ -7,30 +7,31 @@
 
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 class Chromosome
 {
 public:
     static constexpr int VERTICES_NUMBER = 6;
     static constexpr int WHEELS_NUMBER = 2;
-    static constexpr double BODY_VERTEX_MAX = 4.0;
-    static constexpr double WHEEL_SIZE_MAX = 1.0;
+    static constexpr float BODY_VERTEX_MAX = 4.0;
+    static constexpr float WHEEL_SIZE_MAX = 1.0;
 
     Chromosome();
-    Chromosome(std::vector<std::pair<double, double>>& bodyVertices,
+    Chromosome(std::vector<std::pair<float, float>>& bodyVertices,
                std::vector<int>& wheelVertices,
-               std::vector<double>& wheelSizes);
+               std::vector<float>& wheelSizes);
 
-    const std::vector<std::pair<double, double>>& getBodyVertices() const;
+    const std::vector<std::pair<float, float>>& getBodyVertices() const;
 
     const std::vector<int>& getWheelVertices() const;
 
-    const std::vector<double>& getWheelSizes() const;
+    const std::vector<float>& getWheelSizes() const;
 
 private:
-    std::vector<std::pair<double, double>> bodyVertices;
+    std::vector<std::pair<float, float>> bodyVertices;
     std::vector<int> wheelVertices;
-    std::vector<double> wheelSizes;
+    std::vector<float> wheelSizes;
 };
 
 

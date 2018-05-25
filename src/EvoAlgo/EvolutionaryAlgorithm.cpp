@@ -5,7 +5,7 @@
 
 #include "EvoAlgo/EvolutionaryAlgorithm.h"
 
-void EvolutionaryAlgorithm::EvaluateCurrentGenarationAndEvolve(std::vector<double> fitness)
+void EvolutionaryAlgorithm::EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness)
 {
     currentGenerationFitness = fitness;
     auto bestChromos = selectBestChromosomes();
@@ -22,7 +22,7 @@ const std::vector<Chromosome>& EvolutionaryAlgorithm::GetCurrentGeneration() con
 
 std::vector<Chromosome> EvolutionaryAlgorithm::selectBestChromosomes()
 {
-    std::vector<std::pair<Chromosome, double>> chromosWithFitness;
+    std::vector<std::pair<Chromosome, float>> chromosWithFitness;
 
     for (size_t i = 0; i < currentGeneration.size(); ++i)
     {
@@ -33,7 +33,7 @@ std::vector<Chromosome> EvolutionaryAlgorithm::selectBestChromosomes()
 
     std::partial_sort(chromosWithFitness.begin(), chromosWithFitness.begin() + howManySelected,
                       chromosWithFitness.end(),
-                      [](const std::pair<Chromosome, double>& left, const std::pair<Chromosome, double>& right)
+                      [](const std::pair<Chromosome, float>& left, const std::pair<Chromosome, float>& right)
                       {
                           return left.second > right.second;
                       });
@@ -78,9 +78,9 @@ void EvolutionaryAlgorithm::mutateCurrentGeneration()
 
 Chromosome EvolutionaryAlgorithm::crossoverChromos(const Chromosome& first, const Chromosome& second)
 {
-    std::vector<std::pair<double, double>> newBodyVertices;
+    std::vector<std::pair<float, float>> newBodyVertices;
     std::vector<int> newWheelVertices;
-    std::vector<double> newWheelSizes;
+    std::vector<float> newWheelSizes;
 
     int cutAt = RandomNumberGenerator::Instance().GetIntFromUniformDist(0, Chromosome::VERTICES_NUMBER);
 
@@ -106,17 +106,17 @@ Chromosome EvolutionaryAlgorithm::crossoverChromos(const Chromosome& first, cons
 
 Chromosome EvolutionaryAlgorithm::mutateChromo(const Chromosome& chromo)
 {
-    std::vector<std::pair<double, double>> newBodyVertices;
+    std::vector<std::pair<float, float>> newBodyVertices;
     std::vector<int> newWheelVertices;
-    std::vector<double> newWheelSizes;
+    std::vector<float> newWheelSizes;
 
     for (auto const& vertex:chromo.getBodyVertices())
     {
         if (RandomNumberGenerator::Instance().GetDoubleFromUniformDist(0.0, 1.0) < mutationProb)
         {
-            double v1 = vertex.first +
+            float v1 = vertex.first +
                         RandomNumberGenerator::Instance().GetFromNormalDist(0.0, Chromosome::BODY_VERTEX_MAX / 2);
-            double v2 = vertex.second +
+            float v2 = vertex.second +
                         RandomNumberGenerator::Instance().GetFromNormalDist(0.0, Chromosome::BODY_VERTEX_MAX / 2);
 
             v1 = boost::algorithm::clamp(v1, -Chromosome::BODY_VERTEX_MAX, Chromosome::BODY_VERTEX_MAX);
@@ -152,7 +152,7 @@ Chromosome EvolutionaryAlgorithm::mutateChromo(const Chromosome& chromo)
     {
         if (RandomNumberGenerator::Instance().GetDoubleFromUniformDist(0.0, 1.0) < mutationProb)
         {
-            double newSize = size + RandomNumberGenerator::Instance().GetFromNormalDist(0,
+            float newSize = size + RandomNumberGenerator::Instance().GetFromNormalDist(0,
                                                                                         Chromosome::WHEEL_SIZE_MAX /
                                                                                         2);
 
@@ -170,7 +170,7 @@ Chromosome EvolutionaryAlgorithm::mutateChromo(const Chromosome& chromo)
     return Chromosome(newBodyVertices, newWheelVertices, newWheelSizes);
 }
 
-EvolutionaryAlgorithm::EvolutionaryAlgorithm(size_t genSize, size_t selectionSize, double mutationProbability)
+EvolutionaryAlgorithm::EvolutionaryAlgorithm(size_t genSize, size_t selectionSize, float mutationProbability)
         : generationSize{genSize},
           howManySelected{selectionSize},
           mutationProb(mutationProbability),
@@ -193,15 +193,15 @@ std::vector<Chromosome> EvolutionaryAlgorithm::generatePopulation()
 
 Chromosome EvolutionaryAlgorithm::generateRandomChromosme()
 {
-    std::vector<std::pair<double, double>> newBodyVertices;
+    std::vector<std::pair<float, float>> newBodyVertices;
     std::vector<int> newWheelVertices;
-    std::vector<double> newWheelSizes;
+    std::vector<float> newWheelSizes;
 
     for (int i = 0; i < Chromosome::VERTICES_NUMBER; ++i)
     {
-        double v1 = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(-Chromosome::BODY_VERTEX_MAX,
+        float v1 = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(-Chromosome::BODY_VERTEX_MAX,
                                                                                Chromosome::BODY_VERTEX_MAX);
-        double v2 = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(-Chromosome::BODY_VERTEX_MAX,
+        float v2 = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(-Chromosome::BODY_VERTEX_MAX,
                                                                                Chromosome::BODY_VERTEX_MAX);
 
         newBodyVertices.emplace_back(std::make_pair(v1, v2));
@@ -209,7 +209,7 @@ Chromosome EvolutionaryAlgorithm::generateRandomChromosme()
 
     for (int i = 0; i < Chromosome::WHEELS_NUMBER; ++i)
     {
-        double size = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(0, Chromosome::WHEEL_SIZE_MAX);
+        float size = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(0, Chromosome::WHEEL_SIZE_MAX);
 
         int vertex = RandomNumberGenerator::Instance().GetIntFromUniformDist(0, Chromosome::VERTICES_NUMBER - 1);
 

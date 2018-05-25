@@ -14,18 +14,18 @@
 class EvolutionaryAlgorithm
 {
 public:
-    EvolutionaryAlgorithm(size_t genSize, size_t selectionSize, double mutationProbability);
+    EvolutionaryAlgorithm(size_t genSize, size_t selectionSize, float mutationProbability);
 
-    void EvaluateCurrentGenarationAndEvolve(std::vector<double> fitness);
+    void EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness);
 
     const std::vector<Chromosome>& GetCurrentGeneration() const;
 
 private:
     const size_t generationSize;
     const size_t howManySelected;
-    double mutationProb;
+    float mutationProb;
     std::vector<Chromosome> currentGeneration;
-    std::vector<double> currentGenerationFitness;
+    std::vector<float> currentGenerationFitness;
 
     std::vector<Chromosome> selectBestChromosomes();
 
