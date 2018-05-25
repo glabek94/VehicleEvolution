@@ -8,6 +8,8 @@
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include <vector>
+#include <memory>
+
 #include "GroundChain.h"
 #include "Constants.h"
 #include "World.h"
@@ -31,10 +33,6 @@ private:
     GroundFactory&operator=(const GroundFactory& ) = delete;
 
 
-    std::unique_ptr<std::mt19937> rng;
-    std::unique_ptr<std::uniform_real_distribution<>> distribution;
-
-
     /*
      * Edge length in px
      */
@@ -48,14 +46,17 @@ private:
     /*
      * Maximum degree in rads
      */
-    const float maxDegree = 0.6f;
+    const float maxDegree = 0.2f;
 
     b2Vec2 previousChainEnd;
 
+    //shared_ptrs are slow, maybe change to something else in future?
+    std::shared_ptr<GroundChain> previousChain;
+
 public:
     static GroundFactory& getInstance();
-    GroundChain createGround();
-
+    std::shared_ptr<GroundChain> createGround();
+    b2Vec2 getPreviousChainEnd() const;
 };
 
 

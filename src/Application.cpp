@@ -61,7 +61,9 @@ void Application::run() {
     //b2Vec2 b(300/SCALE, 300/SCALE);
     //GroundChain ground(a,b,&world);
 
-    GroundChain ground = GroundFactory::getInstance().createGround();
+    std::vector<std::shared_ptr<GroundChain>> ground;
+
+    ground.emplace_back(GroundFactory::getInstance().createGround());
 
     while (window.isOpen()) {
 
@@ -86,7 +88,7 @@ void Application::run() {
             CreateBox(view.getCenter().x+MouseX-view.getSize().x/2, view.getCenter().y+MouseY-view.getSize().y/2);
         }
 
-        World::getInstance().step(1 / 60.f, 8, 3);
+        World::getInstance().step(1 /20.f, 8, 3);
         window.clear(sf::Color::White);
 
         for(auto b : boxes){
@@ -101,7 +103,14 @@ void Application::run() {
             window.draw(rs);
         }
 
-        window.draw(ground.getShapes());
+        // check if new GroundChain needed
+        if(b2Distance(GroundFactory::getInstance().getPreviousChainEnd(), car.getBody()->GetPosition())<20.f){
+            ground.emplace_back(GroundFactory::getInstance().createGround());
+        }
+
+        for(const auto& c : ground)
+            window.draw(c->getShapes());
+
         car.updateShape();
         view.setCenter(car.getChassisShape().getPosition());
         //view.setCenter(0, 0);

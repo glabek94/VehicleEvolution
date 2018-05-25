@@ -35,6 +35,8 @@ public:
 
     const sf::VertexArray& getShapes() const;
 
+    b2ChainShape* getChainShape() const;
+
 };
 
 
