@@ -127,8 +127,13 @@ void Application::run()
         //view.setCenter(0, 0);
         window.setView(view);
         window.draw(car.getChassisShape());
-        window.draw(car.getLeftWheelShape());
-        window.draw(car.getRightWheelShape());
+
+        for(auto const& wheel: car.getWheelShapes())
+        {
+            window.draw(wheel);
+        }
+//        window.draw(car.getLeftWheelShape());
+//        window.draw(car.getRightWheelShape());
 
         //window.draw(rs);
         window.display();

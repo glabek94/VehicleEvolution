@@ -209,7 +209,7 @@ Chromosome EvolutionaryAlgorithm::generateRandomChromosme()
 
     for (int i = 0; i < Chromosome::WHEELS_NUMBER; ++i)
     {
-        float size = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(0, Chromosome::WHEEL_SIZE_MAX);
+        float size = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(0.0, Chromosome::WHEEL_SIZE_MAX);
 
         int vertex = RandomNumberGenerator::Instance().GetIntFromUniformDist(0, Chromosome::VERTICES_NUMBER - 1);
 

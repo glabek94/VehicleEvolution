@@ -20,11 +20,13 @@ private:
 
 
     std::vector<std::pair<float, float>> vertices;
-
+    Chromosome chromo;
     /*
      * Naked pointer since b2Bodies are allocated by b2World.
      */
     b2Body* chassisBody;
+
+    std::vector<b2Body*> wheelBodies;
     b2Body* leftWheelBody;
     b2Body* rightWheelBody;
 
@@ -32,6 +34,7 @@ private:
     /*
      * Naked pointer since b2Joints are allocated by b2World.
      */
+    std::vector<b2WheelJoint*> springs;
     b2WheelJoint* springLeft;
     b2WheelJoint* springRight;
 
@@ -44,13 +47,22 @@ private:
     sf::ConvexShape chassisShape;
 
     //temporary code duplication, left/right will be changed to pair or vector;
+    std::vector<sf::CircleShape> wheelShapes;
+public:
+    const std::vector<sf::CircleShape>& getWheelShapes() const;
+
+private:
     sf::CircleShape leftWheelShape;
     sf::CircleShape rightWheelShape;
 
 
     void createShapes(float leftWheelSize, float rightWheelSize, float x_,  float y_);
 
+    void createShapes(const std::vector<float>& wheelSizes, float x_, float y_);
+
     void createBody(float leftWheelSize, float rightWheelSize,  float x_,  float y_);
+
+    void createBody(const std::vector<float>& wheelSizes, const std::vector<int>& wheelVertices, float x_, float y_);
 
 public:
     /*
