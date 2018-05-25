@@ -30,16 +30,11 @@ private:
 
 
     /*
-     * Naked pointer since b2Bodies are allocated by b2World.
+     * Naked pointer since b2Joints are allocated by b2World.
      */
     b2WheelJoint* springLeft;
     b2WheelJoint* springRight;
 
-
-    /*
-     * Maybe in future it can be changed to the shared_ptr - performance tests needed.
-     */
-    b2World* world;
 
     /*
      * In this case, it actually represents concave shape, but since sf::ConvexShape is implemented
@@ -61,9 +56,9 @@ public:
     /*
      * vertices_ is vector of vertices representing the body in the Box2D-scale (meters).
      */
-    Vehicle( std::vector<std::pair<float, float>> &vertices_, float leftWheelSize, float rightWheelSize, float x_, float y_, b2World *world_);
+    Vehicle( std::vector<std::pair<float, float>> &vertices_, float leftWheelSize, float rightWheelSize, float x_, float y__);
 
-    Vehicle(const Chromosome& chromosome, float x_, float y_, b2World *world_);
+    Vehicle(const Chromosome& chromosome, float x_, float y_);
     sf::ConvexShape getChassisShape() const;
     sf::CircleShape getLeftWheelShape() const;
     sf::CircleShape getRightWheelShape() const;

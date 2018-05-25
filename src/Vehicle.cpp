@@ -4,6 +4,7 @@
 
 #include <numeric>
 #include <utility>
+#include <World.h>
 #include "Vehicle.h"
 
 sf::ConvexShape Vehicle::getChassisShape() const
@@ -42,9 +43,8 @@ void Vehicle::updateShape()
 }
 
 Vehicle::Vehicle(std::vector<std::pair<float, float>>& vertices_, float leftWheelSize, float rightWheelSize, float x_,
-                 float y_, b2World* world_) :
-        vertices{vertices_},
-        world{world_}
+                 float y_) :
+        vertices{vertices_}
 {
 
     createShapes(leftWheelSize, rightWheelSize, x_, y_);
@@ -54,8 +54,7 @@ Vehicle::Vehicle(std::vector<std::pair<float, float>>& vertices_, float leftWhee
 
 }
 
-Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_, b2World* world_) : vertices{
-        chromosome.getBodyVertices()}, world{world_}
+Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_) : vertices{ chromosome.getBodyVertices()}
 {
     float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0,
                                      [](float first, const std::pair<float, float>& second)
@@ -113,10 +112,8 @@ void Vehicle::createBody(float leftWheelSize, float rightWheelSize, float x_, fl
                                          return first += std::get<1>(second);
                                      }) / vertices.size();
 
-    b2BodyDef bodyDef;
-    bodyDef.type = b2_dynamicBody;
-    bodyDef.position = b2Vec2(x_ / SCALE, y_ / SCALE);
-    chassisBody = world->CreateBody(&bodyDef);
+
+    chassisBody = World::getInstance().createDynamicBody(x_ / SCALE, y_ / SCALE);
 
     /*
      * Iterate over every vertex and create a triangle fan centered at [centerX,centerY]
@@ -157,8 +154,7 @@ void Vehicle::createBody(float leftWheelSize, float rightWheelSize, float x_, fl
     leftWheelDef.shape = &leftWheelCircle;
     leftWheelDef.density = 1.0f;
     leftWheelDef.friction = 0.9f;
-    bodyDef.position.Set(x_ / SCALE + vertices[0].first, y_ / SCALE + vertices[0].second);
-    leftWheelBody = world->CreateBody(&bodyDef);
+    leftWheelBody = World::getInstance().createDynamicBody(x_ / SCALE + vertices[0].first, y_ / SCALE + vertices[0].second);
     leftWheelBody->CreateFixture(&leftWheelDef);
 
     b2CircleShape rightWheelCircle;
@@ -167,23 +163,12 @@ void Vehicle::createBody(float leftWheelSize, float rightWheelSize, float x_, fl
     rightWheelDef.shape = &rightWheelCircle;
     rightWheelDef.density = 0.9f;
     rightWheelDef.friction = 0.9f;
-    bodyDef.position.Set(x_ / SCALE + vertices[2].first, y_ / SCALE + vertices[2].second);
-    rightWheelBody = world->CreateBody(&bodyDef);
+    rightWheelBody = World::getInstance().createDynamicBody(x_ / SCALE + vertices[2].first, y_ / SCALE + vertices[2].second);
     rightWheelBody->CreateFixture(&rightWheelDef);
 
-    b2WheelJointDef jointDef;
-    b2Vec2 axis(0.0f, 1.0f);
-
-    jointDef.Initialize(chassisBody, leftWheelBody, leftWheelBody->GetPosition(), axis);
-    jointDef.motorSpeed = 16.0f;
-    jointDef.maxMotorTorque = 30.0f;
-    jointDef.enableMotor = true;
-    jointDef.frequencyHz = 16.0f;
-    jointDef.dampingRatio = 0.7f;
-    springLeft = (b2WheelJoint*) world->CreateJoint(&jointDef);
-
-    jointDef.Initialize(chassisBody, rightWheelBody, rightWheelBody->GetPosition(), axis);
-    springRight = (b2WheelJoint*) world->CreateJoint(&jointDef);
+    //b2Vec2 axis(0.0f, 1.0f);
+    springLeft = World::getInstance().createWheelJoint(chassisBody, leftWheelBody, leftWheelBody->GetPosition());
+    springLeft = World::getInstance().createWheelJoint(chassisBody, rightWheelBody, rightWheelBody->GetPosition());
 }
 
 void Vehicle::createShapes(float leftWheelSize, float rightWheelSize, float x_, float y_)

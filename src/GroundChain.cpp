@@ -4,14 +4,10 @@
 
 #include "GroundChain.h"
 
-GroundChain::GroundChain(std::vector<sf::Vector2f>& verts, b2World *world_)
-: world{world_}, lineStrip{sf::LineStrip, verts.size()}
+GroundChain::GroundChain(std::vector<sf::Vector2f>& verts)
+: lineStrip{sf::LineStrip, verts.size()}
 {
-    b2BodyDef bodyDef;
-    bodyDef.position = b2Vec2(0,0);
-    bodyDef.type = b2_staticBody;
-    b2Body* body = world_->CreateBody(&bodyDef);
-
+    b2Body* body = World::getInstance().createStaticBody(0,0);
     b2ChainShape chainShape;
     b2Vec2 tmp[verts.size()];
     for(int i=0; i<verts.size(); ++i){

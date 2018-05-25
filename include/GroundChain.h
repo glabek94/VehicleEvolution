@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include "Constants.h"
+#include "World.h"
 
 /*! \class GroundChain
  *  \brief Class representing ground
@@ -24,14 +25,12 @@ private:
      */
     b2Body* body;
 
-    b2World *world;
-
     sf::VertexArray lineStrip;
 
 
 public:
 
-    GroundChain( std::vector<sf::Vector2f>& verts, b2World *world_);
+    GroundChain( std::vector<sf::Vector2f>& verts);
 
 
     const sf::VertexArray& getShapes() const;

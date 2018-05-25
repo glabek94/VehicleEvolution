@@ -13,24 +13,19 @@ void Application::run() {
     sf::View view;
     window.setFramerateLimit(60);
 
-
-
-    b2Vec2 gravity(0.f, 9.8f);
-    b2World world(gravity);
-
-    //CreateGround(world, 0.f, 500.f);
-
+    //empty call to initialize -- not needed
+    World::getInstance();
 
     std::vector<std::pair<float, float>> vertices;
-    vertices.push_back(std::make_pair(0,3));
-    vertices.push_back(std::make_pair(-1.1,1));
-    vertices.push_back(std::make_pair(-2,-2));
-    vertices.push_back(std::make_pair(2,-2));
-    vertices.push_back(std::make_pair(1,0));
-    vertices.push_back(std::make_pair(2,2));
+    vertices.emplace_back(std::make_pair(0,3));
+    vertices.emplace_back(std::make_pair(-1.1,1));
+    vertices.emplace_back(std::make_pair(-2,-2));
+    vertices.emplace_back(std::make_pair(2,-2));
+    vertices.emplace_back(std::make_pair(1,0));
+    vertices.emplace_back(std::make_pair(2,2));
 
 
-    Vehicle car(vertices, 1.0f, 1.0f, 200, -300, &world);
+    Vehicle car(vertices, 1.0f, 1.0f, 200, -300);
 
     sf::Event event;
 
@@ -66,7 +61,7 @@ void Application::run() {
     //b2Vec2 b(300/SCALE, 300/SCALE);
     //GroundChain ground(a,b,&world);
 
-    GroundChain ground = GroundFactory::getInstance(&world).createGround();
+    GroundChain ground = GroundFactory::getInstance().createGround();
 
     while (window.isOpen()) {
 
@@ -88,10 +83,10 @@ void Application::run() {
         {
             int MouseX = sf::Mouse::getPosition(window).x;
             int MouseY = sf::Mouse::getPosition(window).y;
-            CreateBox(world, view.getCenter().x+MouseX-view.getSize().x/2, view.getCenter().y+MouseY-view.getSize().y/2);
+            CreateBox(view.getCenter().x+MouseX-view.getSize().x/2, view.getCenter().y+MouseY-view.getSize().y/2);
         }
 
-        world.Step(1 / 60.f, 8, 3);
+        World::getInstance().step(1 / 60.f, 8, 3);
         window.clear(sf::Color::White);
 
         for(auto b : boxes){
@@ -120,29 +115,10 @@ void Application::run() {
     }
 }
 
-void Application::CreateGround(b2World &World, float X, float Y) {
-    b2BodyDef BodyDef;
-    BodyDef.position = b2Vec2(X / SCALE, Y / SCALE);
-    BodyDef.type = b2_staticBody;
-    b2Body *Body = World.CreateBody(&BodyDef);
 
-    //b2PolygonShape Shape;
-    //Shape.SetAsBox((800.f / 2) / SCALE, (16.f / 2) / SCALE);
-    b2EdgeShape Shape;
-    Shape.Set(b2Vec2((X-400)/SCALE,(Y-400)/SCALE),b2Vec2((400+X)/SCALE,(Y-400)/SCALE));
-    b2FixtureDef FixtureDef;
-    FixtureDef.density = 0.f;
-    FixtureDef.shape = &Shape;
-    Body->CreateFixture(&FixtureDef);
-}
-
-void Application::CreateBox(b2World& World, int MouseX, int MouseY)
+void Application::CreateBox(int MouseX, int MouseY)
 {
-    b2BodyDef BodyDef;
-    BodyDef.position = b2Vec2(MouseX/SCALE, MouseY/SCALE);
-    BodyDef.type = b2_dynamicBody;
-    b2Body* Body = World.CreateBody(&BodyDef);
-
+    b2Body* Body = World::getInstance().createDynamicBody(MouseX/SCALE, MouseY/SCALE);
     b2PolygonShape Shape;
     Shape.SetAsBox((32.f/2)/SCALE, (32.f/2)/SCALE);
     b2FixtureDef FixtureDef;

@@ -8,13 +8,13 @@
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
 #include "Constants.h"
+#include "World.h"
 
 class Application {
 public:
     //const float SCALE = 30.f;
     void run();
-    void CreateGround(b2World& World, float X, float Y);
-    void CreateBox(b2World& World, int MouseX, int MouseY);
+    void CreateBox(int MouseX, int MouseY);
     std::vector<b2Body*> boxes;
 
 };

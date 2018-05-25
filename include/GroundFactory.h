@@ -7,12 +7,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <Box2D/Box2D.h>
-#include <random>
-#include <memory>
 #include <vector>
-#include <stdexcept>
 #include "GroundChain.h"
 #include "Constants.h"
+#include "World.h"
+#include "RandomNumberGenerator.h"
 
 /*! \class GroundFactory
  *  \brief Class creating ground objects
@@ -27,7 +26,7 @@ private:
     /*
      * Singleton - constructors are private
      */
-    GroundFactory(b2World *world_);
+    GroundFactory();
     GroundFactory(const GroundFactory&) = delete;
     GroundFactory&operator=(const GroundFactory& ) = delete;
 
@@ -36,29 +35,25 @@ private:
     std::unique_ptr<std::uniform_real_distribution<>> distribution;
 
 
-
-    b2World *world;
-
-
     /*
      * Edge length in px
      */
-    int edgeLength = 150;
+    const int edgeLength = 150;
 
     /*
      * Number of edges in chain
      */
-    int numberOfEdges = 20;
+    const int numberOfEdges = 20;
 
     /*
      * Maximum degree in rads
      */
-    float maxDegree = 0.6f;
+    const float maxDegree = 0.6f;
 
     b2Vec2 previousChainEnd;
 
 public:
-    static GroundFactory& getInstance(b2World *world_);
+    static GroundFactory& getInstance();
     GroundChain createGround();
 
 };
