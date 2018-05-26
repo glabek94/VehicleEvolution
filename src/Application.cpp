@@ -18,51 +18,17 @@ void Application::run()
     //empty call to initialize -- not needed
     World::getInstance();
 
-    std::vector<std::pair<float, float>> vertices;
-    vertices.emplace_back(std::make_pair(0, 3));
-    vertices.emplace_back(std::make_pair(-1.1, 1));
-    vertices.emplace_back(std::make_pair(-2, -2));
-    vertices.emplace_back(std::make_pair(2, -2));
-    vertices.emplace_back(std::make_pair(1, 0));
-    vertices.emplace_back(std::make_pair(2, 2));
 
-    EvolutionaryAlgorithm algo(20, 2, 0.05);
-    //Vehicle car(vertices, 1.0f, 1.0f, 200, -300);
+    EvolutionaryAlgorithm algo(10, 2, 0.05);
 
-    Vehicle car(algo.GetCurrentGeneration()[0], 200, -300);
+
+    std::vector<Vehicle> cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+
+    //std::for_each(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end(), []);
+
+    //Vehicle car(algo.GetCurrentGeneration()[0], 200, -300);
     sf::Event event;
 
-
-    //b2Vec2 array[] = {{0,0},{100/SCALE,30/SCALE},{200/SCALE,40/SCALE}, {300/SCALE,10/SCALE}};
-
-
-    //b2BodyDef bodyDef;
-    //bodyDef.position = b2Vec2(0,0);
-    //bodyDef.type = b2_staticBody;
-    //b2Body* Body = world.CreateBody(&bodyDef);
-
-    //b2ChainShape chainShape;
-    //chainShape.CreateChain(array, 4);
-
-
-    //sf::RectangleShape rs;
-    //rs.setOrigin(0,0);
-    //rs.setPosition(30,70);
-    //rs.setSize(sf::Vector2f(200, 7));
-    //rs.setFillColor(sf::Color::Yellow);
-    //rs.setRotation(30);
-
-    //b2FixtureDef FixtureDef;
-    //FixtureDef.density = 1.f;
-    //FixtureDef.friction = 0.7f;
-    //FixtureDef.shape = &chainShape;
-    //Body->CreateFixture(&FixtureDef);
-
-
-
-    //b2Vec2 a(-100/SCALE,300/SCALE);
-    //b2Vec2 b(300/SCALE, 300/SCALE);
-    //GroundChain ground(a,b,&world);
 
     std::vector<std::shared_ptr<GroundChain>> ground;
 
@@ -70,6 +36,11 @@ void Application::run()
 
     while (window.isOpen())
     {
+
+        //find furthest car
+        auto furthestCar = std::min_element(cars.begin(), cars.end(), []( const Vehicle& a, const Vehicle& b){
+            return a.getBody()->GetPosition().x > b.getBody()->GetPosition().x;
+        });
 
         while (window.pollEvent(event))
         {
@@ -79,7 +50,7 @@ void Application::run()
                     window.close();
                     break;
                 case sf::Event::Resized:
-                    view.setCenter(car.getChassisShape().getPosition());
+                    view.setCenter(furthestCar->getChassisShape().getPosition());
                     //view.setCenter(0,0);
                     view.setSize(window.getSize().x, window.getSize().y);
                     window.setView(view);
@@ -112,7 +83,7 @@ void Application::run()
         }
 
         // check if new GroundChain needed
-        if (b2Distance(GroundFactory::getInstance().getPreviousChainEnd(), car.getBody()->GetPosition()) < 20.f)
+        if (b2Distance(GroundFactory::getInstance().getPreviousChainEnd(), furthestCar->getBody()->GetPosition()) < 20.f)
         {
             ground.emplace_back(GroundFactory::getInstance().createGround());
         }
@@ -122,20 +93,20 @@ void Application::run()
             window.draw(c->getShapes());
         }
 
-        car.updateShape();
-        view.setCenter(car.getChassisShape().getPosition());
+        for(auto & c : cars)
+            c.updateShape();
+
+        view.setCenter(furthestCar->getChassisShape().getPosition());
         //view.setCenter(0, 0);
         window.setView(view);
-        window.draw(car.getChassisShape());
 
-        for(auto const& wheel: car.getWheelShapes())
-        {
-            window.draw(wheel);
+        for(auto const& c : cars) {
+            window.draw(c.getChassisShape());
+
+            for (auto const &wheel: c.getWheelShapes())
+                window.draw(wheel);
         }
-//        window.draw(car.getLeftWheelShape());
-//        window.draw(car.getRightWheelShape());
 
-        //window.draw(rs);
         window.display();
     }
 }
