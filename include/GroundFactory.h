@@ -29,8 +29,10 @@ private:
      * Singleton - constructors are private
      */
     GroundFactory();
-    GroundFactory(const GroundFactory&) = delete;
-    GroundFactory&operator=(const GroundFactory& ) = delete;
+
+    GroundFactory(const GroundFactory &) = delete;
+
+    GroundFactory &operator=(const GroundFactory &) = delete;
 
 
     /*
@@ -46,7 +48,9 @@ private:
     /*
      * Maximum degree in rads
      */
-    const float maxDegree = 0.2f;
+    const float maxDegree = 0.78f;
+
+    float difficultyCoeff = 0.9f;
 
     b2Vec2 previousChainEnd;
 
@@ -54,8 +58,10 @@ private:
     std::shared_ptr<GroundChain> previousChain;
 
 public:
-    static GroundFactory& getInstance();
+    static GroundFactory &getInstance();
+
     std::shared_ptr<GroundChain> createGround();
+
     b2Vec2 getPreviousChainEnd() const;
 };
 

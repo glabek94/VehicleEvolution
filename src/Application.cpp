@@ -27,9 +27,9 @@ void Application::run()
     vertices.emplace_back(std::make_pair(2, 2));
 
     EvolutionaryAlgorithm algo(20, 2, 0.05);
-    //Vehicle car(vertices, 1.0f, 1.0f, 200, -300);
+    Vehicle car(vertices, 1.0f, 1.0f, 200, -300);
 
-    Vehicle car(algo.GetCurrentGeneration()[0], 200, -300);
+    //Vehicle car(algo.GetCurrentGeneration()[0], 200, -300);
     sf::Event event;
 
 
