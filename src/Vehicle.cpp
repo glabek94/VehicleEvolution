@@ -176,7 +176,7 @@ const std::vector<sf::CircleShape> &Vehicle::getWheelShapes() const {
 }
 
 bool Vehicle::isMoving(){
-    if(std::abs(chassisBody->GetLinearVelocity().x)>= 0.1f )
+    if(std::abs(chassisBody->GetLinearVelocity().x)>= 0.2f )
         timeStopped=0;
     else
         timeStopped+=1.f;

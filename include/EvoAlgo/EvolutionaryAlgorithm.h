@@ -11,14 +11,13 @@
 #include <algorithm>
 #include "Chromosome.h"
 
-class EvolutionaryAlgorithm
-{
+class EvolutionaryAlgorithm {
 public:
     EvolutionaryAlgorithm(size_t genSize, size_t selectionSize, float mutationProbability);
 
     void EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness);
 
-    const std::vector<Chromosome>& GetCurrentGeneration() const;
+    const std::vector<Chromosome> &GetCurrentGeneration() const;
 
 private:
     const size_t generationSize;
@@ -29,10 +28,14 @@ private:
 
     std::vector<Chromosome> selectBestChromosomes();
 
-    std::vector<Chromosome> crossoverChromosomesForNewGeneration(std::vector<Chromosome>& chromos);
+    std::vector<Chromosome> crossoverChromosomesForNewGeneration(std::vector<Chromosome> &chromos);
 
-    Chromosome crossoverChromos(const Chromosome& first, const Chromosome& second);
-    Chromosome mutateChromo(const Chromosome& chromo);
+    Chromosome crossoverChromos(const Chromosome &first, const Chromosome &second);
+
+    std::vector<Chromosome> crossoverChromosMichalewicz(const Chromosome &first, const Chromosome &second);
+
+    Chromosome mutateChromo(const Chromosome &chromo);
+
     void mutateCurrentGeneration();
 
     std::vector<Chromosome> generatePopulation();

@@ -10,6 +10,8 @@
 
 void Application::run() {
 
+    sf::Font font;
+    font.loadFromFile("arial.ttf");
     sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Vehicle Evolution");
     sf::View view;
     window.setFramerateLimit(60);
@@ -17,7 +19,7 @@ void Application::run() {
     //empty call to initialize -- not needed
     World::getInstance();
 
-    EvolutionaryAlgorithm algo(10, 4, 0.05);
+    EvolutionaryAlgorithm algo(10, 2, 0.1f);
 
     std::vector<Vehicle> cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
     std::vector<float> fitness(cars.size());
@@ -26,6 +28,10 @@ void Application::run() {
     sf::Event event;
     ground.emplace_back(GroundFactory::getInstance().createGround());
 
+    sf::Text ranking;
+    ranking.setFont(font);
+
+    sf::FloatRect textRect = ranking.getLocalBounds();
     while (window.isOpen()) {
         //find furthest car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
@@ -49,11 +55,28 @@ void Application::run() {
             }
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B)){
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B)) {
             int MouseX = sf::Mouse::getPosition(window).x;
             int MouseY = sf::Mouse::getPosition(window).y;
             CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
-            view.getCenter().y + MouseY - view.getSize().y / 2);
+                      view.getCenter().y + MouseY - view.getSize().y / 2);
+        }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+            //int MouseX = sf::Mouse::getPosition(window).x;
+            //int MouseY = sf::Mouse::getPosition(window).y;
+            //CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
+            //view.getCenter().y + MouseY - view.getSize().y / 2);
+            std::vector<float> fitness;
+            std::transform(cars.begin(), cars.end(), std::back_inserter(fitness), [&](Vehicle &c) {
+                auto toReturn = c.getBody()->GetPosition().x;
+                c.deleteBody();
+                return toReturn;
+            });
+
+            cars.clear();
+            algo.EvaluateCurrentGenarationAndEvolve(fitness);
+            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
         }
 
         World::getInstance().step(1 / 20.f, 8, 3);
@@ -88,28 +111,27 @@ void Application::run() {
 
 
         //delete cars that are not moving and note their fitness
-        int i=0;
-        cars.erase(std::remove_if(cars.begin(), cars.end(),
-                                  [&fitness, &i](Vehicle& c) -> bool {
-                                           if(!c.isMoving())
-                                            {
-                                                fitness[i++] = c.getBody()->GetPosition().x;
-                                                c.deleteBody();
-                                                return true;
-                                            }
-                                            i++;
-                                            return false;
-                                  }), cars.end());
+//        int i = 0;
+//        cars.erase(std::remove_if(cars.begin(), cars.end(),
+//                                  [&fitness, &i](Vehicle &c) -> bool {
+//                                      if (!c.isMoving()) {
+//                                          fitness[i++] = c.getBody()->GetPosition().x;
+//                                          c.deleteBody();
+//                                          return true;
+//                                      }
+////                                      i++;
+//                                      return false;
+//                                  }), cars.end());
 
 
         //std::cout<<"BODY COUNT: "<<World::getInstance().getBodyCount()<<std::endl;
-        if (cars.empty()){
-            algo.EvaluateCurrentGenarationAndEvolve(fitness);
-            cars.clear();
-            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-            fitness.clear();
-
-        }
+//        if (cars.empty()) {
+//            algo.EvaluateCurrentGenarationAndEvolve(fitness);
+//            cars.clear();
+//            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+//            fitness.clear();
+//
+//        }
         /*
         for (std::vector<Vehicle>::iterator it = cars.begin(); it!=cars.end(); ++it) {
                 if(!it->isMoving())
@@ -117,16 +139,31 @@ void Application::run() {
         }
         */
 
-        for(auto &c : cars) {
+        for (auto &c : cars) {
             c.updateShape();
         }
+
+        std::string txt = "";
 
         for (auto const &c : cars) {
             window.draw(c.getChassisShape());
 
             for (auto const &wheel: c.getWheelShapes())
                 window.draw(wheel);
+
+            txt += std::to_string(c.getBody()->GetPosition().x);
+            txt += '\n';
         }
+
+        ranking.setString(txt);
+
+        ranking.setOrigin(textRect.left + textRect.width / 2.0f,
+                          textRect.top + textRect.height / 2.0f);
+        ranking.setPosition(furthestCar->getChassisShape().getPosition());
+        ranking.setCharacterSize(24);
+        ranking.setFillColor(sf::Color::Black);
+
+        window.draw(ranking);
 
         window.display();
     }
