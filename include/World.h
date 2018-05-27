@@ -15,7 +15,6 @@
  */
 
 class World {
-
 private:
 
      //Singleton - constructors are private
@@ -23,6 +22,7 @@ private:
     World();
     World(const World& ) = delete;
     World&operator=(const World& ) = delete;
+
 
     b2Vec2 gravity;
     b2World world;
@@ -43,6 +43,9 @@ public:
                                    const b2Vec2& anchor,
                                    const b2Vec2& axis = b2Vec2(0.f, 1.f));
     void step(float timeStep, int velocityIterations, int positionIterations);
+    void destroyBody(b2Body* body);
+    void destroyJoint(b2Joint* joint);
+    int32 getBodyCount() const;
 };
 
 

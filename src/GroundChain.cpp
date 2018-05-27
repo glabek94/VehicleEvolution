@@ -20,7 +20,7 @@ GroundChain::GroundChain(std::vector<sf::Vector2f>& verts)
     b2FixtureDef FixtureDef;
     FixtureDef.density = 1.f;
     //FixtureDef.friction = 0.7f;
-    FixtureDef.friction = 30.0f;
+    FixtureDef.friction = 1.0f;
     FixtureDef.shape = &chainShape;
     body->CreateFixture(&FixtureDef);
 

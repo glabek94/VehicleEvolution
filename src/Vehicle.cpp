@@ -35,7 +35,9 @@ Vehicle::Vehicle(const Chromosome &chromosome, float x_, float y_) : vertices{ch
                                                                      chromo(chromosome),
                                                                      wheelBodies(Chromosome::WHEELS_NUMBER),
                                                                      springs(Chromosome::WHEELS_NUMBER),
-                                                                     wheelShapes(Chromosome::WHEELS_NUMBER) {
+                                                                     wheelShapes(Chromosome::WHEELS_NUMBER),
+                                                                     timeStopped(0.f)
+{
     float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
                                     [](float acc, const std::pair<float, float> &vrt) -> float {
                                         return acc += vrt.first;
@@ -127,9 +129,9 @@ Vehicle::createBody(const std::vector<float> &wheelSizes, const std::vector<int>
         }
 
         b2FixtureDef triangleFixture;
-        triangleFixture.density = 1;
+        triangleFixture.density = 1.f;
         //triangleFixture.friction = 0.7;
-        triangleFixture.friction = 30.0;
+        triangleFixture.friction = 50.0;
         triangleFixture.filter.groupIndex = -1;
         b2PolygonShape triangleShape;
 
@@ -173,4 +175,22 @@ const std::vector<sf::CircleShape> &Vehicle::getWheelShapes() const {
     return wheelShapes;
 }
 
+bool Vehicle::isMoving(){
+    if(std::abs(chassisBody->GetLinearVelocity().x)>= 0.1f )
+        timeStopped=0;
+    else
+        timeStopped+=1.f;
+
+    //if(timeStopped>15.f)
+    //    chassisShape.setFillColor(sf::Color::Red);
+            //std::cout<<std::abs(chassisBody->GetLinearVelocity().x)<<' '<<timeStopped<<std::endl;
+    return timeStopped < 40.0f;
+}
+
+void Vehicle::deleteBody()  {
+
+    World::getInstance().destroyBody(chassisBody);
+    for(auto w : wheelBodies)
+        World::getInstance().destroyBody(w);
+}
 

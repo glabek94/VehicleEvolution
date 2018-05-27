@@ -42,19 +42,22 @@ private:
     std::vector<sf::CircleShape> wheelShapes;
 
 
+    //used in isMoving()
+    float timeStopped;
+
     void createShapes(const std::vector<float>& wheelSizes, float x_, float y_);
 
     void createBody(const std::vector<float>& wheelSizes, const std::vector<int>& wheelVertices, float x_, float y_);
 
 public:
 
-    Vehicle(const Chromosome& chromosome, float x_ = 200, float y_ = -300);
+    Vehicle(const Chromosome& chromosome, float x_ = 250, float y_ = -300);
     const std::vector<sf::CircleShape>& getWheelShapes() const;
     sf::ConvexShape getChassisShape() const;
     void updateShape();
     b2Body* getBody() const;
-
-
+    bool isMoving();
+    void deleteBody();
 
 };
 

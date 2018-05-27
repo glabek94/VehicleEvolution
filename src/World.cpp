@@ -4,7 +4,9 @@
 
 #include "World.h"
 
-World::World() : gravity{0.f, 9.8f}, world{gravity} {}
+World::World() : gravity{0.f, 9.8f}, world{gravity} {
+    //world.SetAllowSleeping(true);
+}
 
 //singleton
 World& World::getInstance() {
@@ -47,3 +49,14 @@ void World::step(float timeStep, int velocityIterations, int positionIterations)
     world.Step(timeStep, velocityIterations, positionIterations);
 }
 
+void World::destroyBody(b2Body *body) {
+    world.DestroyBody(body);
+}
+
+void World::destroyJoint(b2Joint *joint) {
+    world.DestroyJoint(joint);
+}
+
+int32 World::getBodyCount() const {
+    return world.GetBodyCount();
+}
