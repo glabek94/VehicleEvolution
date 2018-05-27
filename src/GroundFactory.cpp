@@ -22,8 +22,8 @@ std::shared_ptr<GroundChain> GroundFactory::createGround() {
     verts.emplace_back(sf::Vector2f(previousChainEnd.x * SCALE, previousChainEnd.y * SCALE));
     for (int i = 1; i < numberOfEdges; ++i) {
         float curMax = maxDegree - difficultyCoeff * maxDegree;
-        float deg = RandomNumberGenerator::Instance().GetDoubleFromUniformDist(-curMax,
-                                                                               curMax);
+        float deg = RandomNumberGenerator::Instance().GetFloatFromUniformDist(-curMax,
+                                                                              curMax);
         verts.emplace_back(
                 sf::Vector2f(verts[i - 1].x + edgeLength * std::cos(deg), verts[i - 1].y + edgeLength * std::sin(deg)));
     }

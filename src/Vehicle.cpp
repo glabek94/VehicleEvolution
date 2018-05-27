@@ -7,25 +7,21 @@
 #include <World.h>
 #include "Vehicle.h"
 
-sf::ConvexShape Vehicle::getChassisShape() const
-{
+sf::ConvexShape Vehicle::getChassisShape() const {
     return chassisShape;
 }
 
-b2Body* Vehicle::getBody() const
-{
+b2Body *Vehicle::getBody() const {
     return chassisBody;
 }
 
-void Vehicle::updateShape()
-{
+void Vehicle::updateShape() {
     //std::cout<<"position: x:"<<body->GetPosition().x*SCALE <<" y:"<< body->GetPosition().y*SCALE<<std::endl;
     chassisShape.setPosition(chassisBody->GetPosition().x * SCALE, chassisBody->GetPosition().y * SCALE);
     chassisShape.setRotation(chassisBody->GetAngle() * 180 / b2_pi);
 
     int i = 0;
-    for (auto& wheelShape : wheelShapes)
-    {
+    for (auto &wheelShape : wheelShapes) {
         wheelShape.setPosition(
                 chassisShape.getTransform().transformPoint(chassisShape.getPoint(chromo.getWheelVertices()[i])).x,
                 chassisShape.getTransform().transformPoint(chassisShape.getPoint(chromo.getWheelVertices()[i])).y);
@@ -35,27 +31,23 @@ void Vehicle::updateShape()
 }
 
 
-Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_) : vertices{chromosome.getBodyVertices()},
+Vehicle::Vehicle(const Chromosome &chromosome, float x_, float y_) : vertices{chromosome.getBodyVertices()},
                                                                      chromo(chromosome),
-                                                                     wheelShapes(Chromosome::WHEELS_NUMBER),
                                                                      wheelBodies(Chromosome::WHEELS_NUMBER),
-                                                                     springs(Chromosome::WHEELS_NUMBER)
-{
+                                                                     springs(Chromosome::WHEELS_NUMBER),
+                                                                     wheelShapes(Chromosome::WHEELS_NUMBER) {
     float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
-                                    [](float acc, const std::pair<float, float>& vrt) -> float
-                                    {
+                                    [](float acc, const std::pair<float, float> &vrt) -> float {
                                         return acc += vrt.first;
                                     }) / vertices.size();
 
     float centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
-                                    [](float acc, const std::pair<float, float>& vrt) -> float
-                                    {
+                                    [](float acc, const std::pair<float, float> &vrt) -> float {
                                         return acc += vrt.second;
                                     }) / vertices.size();
 
     std::sort(vertices.begin(), vertices.end(),
-              [&](const std::pair<float, float>& left, const std::pair<float, float>& right)
-              {
+              [&](const std::pair<float, float> &left, const std::pair<float, float> &right) {
                   return atan2(left.second - centerY, left.first - centerX) <
                          atan2(right.second - centerY, right.first - centerX);
               });
@@ -66,8 +58,7 @@ Vehicle::Vehicle(const Chromosome& chromosome, float x_, float y_) : vertices{ch
 }
 
 
-
-void Vehicle::createShapes(const std::vector<float>& wheelSizes, float x_, float y_) {
+void Vehicle::createShapes(const std::vector<float> &wheelSizes, float x_, float y_) {
 /*
      *  SFML shape creation
      */
@@ -83,11 +74,11 @@ void Vehicle::createShapes(const std::vector<float>& wheelSizes, float x_, float
     //generate color according to the fenotype
     //make proper scale later
     //dangerous!! needs to be changed to something without overflows..
-    sf::Color c(0,0,0);
-    for(const auto& v : vertices){
-        c.r+=v.first*15;
-        c.g+=v.second*15;
-        c.b+=(v.first + v.second)*7;
+    sf::Color c(0, 0, 0);
+    for (const auto &v : vertices) {
+        c.r += v.first * 15;
+        c.g += v.second * 15;
+        c.b += (v.first + v.second) * 7;
     }
 
     chassisShape.setFillColor(c);
@@ -100,7 +91,7 @@ void Vehicle::createShapes(const std::vector<float>& wheelSizes, float x_, float
         //set color according to the genotype
         //make proper scale later
         //dangerous! Might overflow...
-        wheelShapes[i].setFillColor(sf::Color(wheel*70, wheel*100, wheel*70));
+        wheelShapes[i].setFillColor(sf::Color(wheel * 70, wheel * 100, wheel * 70));
         wheelShapes[i].setOutlineThickness(1.0f);
         wheelShapes[i].setOutlineColor(sf::Color::Black);
 
@@ -109,17 +100,15 @@ void Vehicle::createShapes(const std::vector<float>& wheelSizes, float x_, float
 
 }
 
-void Vehicle::createBody(const std::vector<float>& wheelSizes, const std::vector<int>& wheelVertices, float x_, float y_)
-{
+void
+Vehicle::createBody(const std::vector<float> &wheelSizes, const std::vector<int> &wheelVertices, float x_, float y_) {
     float centerX = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
-                                    [](float acc, const std::pair<float, float>& vrt) -> float
-                                    {
+                                    [](float acc, const std::pair<float, float> &vrt) -> float {
                                         return acc += vrt.first;
                                     }) / vertices.size();
 
     float centerY = std::accumulate(vertices.begin(), vertices.end(), 0.0f,
-                                    [](float acc, const std::pair<float, float>& vrt) -> float
-                                    {
+                                    [](float acc, const std::pair<float, float> &vrt) -> float {
                                         return acc += vrt.second;
                                     }) / vertices.size();
 
@@ -129,21 +118,18 @@ void Vehicle::createBody(const std::vector<float>& wheelSizes, const std::vector
     /*
      * Iterate over every vertex and create a triangle fan centered at [centerX,centerY]
      */
-    for (auto v = vertices.begin(); v != vertices.end(); ++v)
-    {
+    for (auto v = vertices.begin(); v != vertices.end(); ++v) {
         std::vector<std::pair<float, float>>::iterator next;
-        if (v + 1 != vertices.end())
-        {
+        if (v + 1 != vertices.end()) {
             next = v + 1;
-        }
-        else
-        {
+        } else {
             next = vertices.begin();
         }
 
         b2FixtureDef triangleFixture;
         triangleFixture.density = 1;
-        triangleFixture.friction = 0.7;
+        //triangleFixture.friction = 0.7;
+        triangleFixture.friction = 30.0;
         triangleFixture.filter.groupIndex = -1;
         b2PolygonShape triangleShape;
 
@@ -152,14 +138,18 @@ void Vehicle::createBody(const std::vector<float>& wheelSizes, const std::vector
         triangle[1] = {v->first, v->second};
 
         triangle[2] = {next->first, next->second};
+
+        if(triangle[1].x == triangle[2].x || triangle[1].y == triangle[2].y)
+        {
+            continue;
+        }
         triangleShape.Set(triangle, 3);
         triangleFixture.shape = &triangleShape;
         chassisBody->CreateFixture(&triangleFixture);
     }
 
     int i = 0;
-    for (auto const& wheel:wheelSizes)
-    {
+    for (auto const &wheel:wheelSizes) {
         b2CircleShape wheelCircle;
         wheelCircle.m_radius = wheel;
         b2FixtureDef wheelDef;
@@ -174,14 +164,12 @@ void Vehicle::createBody(const std::vector<float>& wheelSizes, const std::vector
         i++;
     }
 
-    for (int i = 0; i < wheelSizes.size(); i++)
-    {
+    for (int i = 0; i < wheelSizes.size(); i++) {
         springs[i] = World::getInstance().createWheelJoint(chassisBody, wheelBodies[i], wheelBodies[i]->GetPosition());
     }
 }
 
-const std::vector<sf::CircleShape>& Vehicle::getWheelShapes() const
-{
+const std::vector<sf::CircleShape> &Vehicle::getWheelShapes() const {
     return wheelShapes;
 }
 

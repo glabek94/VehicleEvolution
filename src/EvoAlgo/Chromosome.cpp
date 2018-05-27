@@ -4,7 +4,9 @@
 
 #include "EvoAlgo/Chromosome.h"
 
+constexpr float Chromosome::BODY_VERTEX_MIN;
 constexpr float Chromosome::BODY_VERTEX_MAX;
+constexpr float Chromosome::WHEEL_SIZE_MIN;
 constexpr float Chromosome::WHEEL_SIZE_MAX;
 
 Chromosome::Chromosome() : bodyVertices{VERTICES_NUMBER}, wheelVertices{WHEELS_NUMBER}, wheelSizes{WHEELS_NUMBER}
