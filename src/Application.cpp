@@ -109,35 +109,22 @@ void Application::run() {
             window.draw(c->getShapes());
         }
 
-
         //delete cars that are not moving and note their fitness
-//        int i = 0;
-//        cars.erase(std::remove_if(cars.begin(), cars.end(),
-//                                  [&fitness, &i](Vehicle &c) -> bool {
-//                                      if (!c.isMoving()) {
-//                                          fitness[i++] = c.getBody()->GetPosition().x;
-//                                          c.deleteBody();
-//                                          return true;
-//                                      }
-////                                      i++;
-//                                      return false;
-//                                  }), cars.end());
-
-
-        //std::cout<<"BODY COUNT: "<<World::getInstance().getBodyCount()<<std::endl;
-//        if (cars.empty()) {
-//            algo.EvaluateCurrentGenarationAndEvolve(fitness);
-//            cars.clear();
-//            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-//            fitness.clear();
-//
-//        }
-        /*
-        for (std::vector<Vehicle>::iterator it = cars.begin(); it!=cars.end(); ++it) {
-                if(!it->isMoving())
-                    cars.erase(it);
+        for(int i=0; i<cars.size(); ++i){
+            if(!cars[i].isMoving()) {
+                fitness[i] = cars[i].getBody()->GetPosition().x;
+                cars[i].deleteBody();
+                cars.erase(cars.begin() + i);
+            }
         }
-        */
+
+        if (cars.empty()) {
+            algo.EvaluateCurrentGenarationAndEvolve(fitness);
+            cars.clear();
+            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+            fitness.clear();
+
+        }
 
         for (auto &c : cars) {
             c.updateShape();

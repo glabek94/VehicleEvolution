@@ -28,10 +28,10 @@ private:
     b2World world;
 
     //b2WheelJoint constants
-    const float32 defaultMotorSpeed = 4.f;
-    const float32 defaultMaxMotorTorque = 60.f;
+    const float32 defaultMotorSpeed = 8.f;
+    const float32 defaultMaxMotorTorque = 40.f;
     const bool    defaultEnableMotor = true;
-    const float32 defaultFrequencyHz = 4.f;
+    const float32 defaultFrequencyHz = 8.f;
     const float32 defaultDampingRatio = 0.7f;
 
 public:
