@@ -9,6 +9,7 @@
 #include <Box2D/Box2D.h>
 #include "Constants.h"
 #include "World.h"
+#include "Vehicle.h"
 
 class Application {
 public:
@@ -17,6 +18,7 @@ public:
     void CreateBox(int MouseX, int MouseY);
     std::vector<b2Body*> boxes;
 
+    float computeFitness(const Vehicle &car);
 };
 
 

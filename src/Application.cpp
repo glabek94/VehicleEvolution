@@ -126,7 +126,7 @@ void Application::run() {
         //new generation if no vehicle is moving
         if (!someoneIsMoving) {
             for (int i = 0; i < cars.size(); ++i) {
-                fitness[i] = cars[i].getBody()->GetPosition().x;
+                fitness[i] = computeFitness(cars[i]);
                 std::cerr << i << ' ' << fitness[i] << ';' << std::endl;
                 cars[i].deleteBody();
             }
@@ -159,8 +159,10 @@ void Application::run() {
 
         ranking.setOrigin(textRect.left + textRect.width / 2.0f,
                           textRect.top + textRect.height / 2.0f);
-        ranking.setPosition(furthestCar->getChassisShape().getPosition());
-        ranking.setCharacterSize(24);
+        //ranking.setPosition(furthestCar->getChassisShape().getPosition());
+        ranking.setPosition(view.getCenter().x - view.getSize().x / 2,
+                            view.getCenter().y - view.getSize().y / 2);
+        ranking.setCharacterSize(12);
         ranking.setFillColor(sf::Color::Black);
 
         window.draw(ranking);
@@ -180,4 +182,10 @@ void Application::CreateBox(int MouseX, int MouseY) {
     FixtureDef.shape = &Shape;
     Body->CreateFixture(&FixtureDef);
     boxes.push_back(Body);
+}
+
+float Application::computeFitness(const Vehicle &car) {
+    auto dist = car.getBody()->GetPosition().x;
+    if (dist < 20.0) { return 0.0f; }
+    return dist;
 }
