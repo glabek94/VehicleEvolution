@@ -6,12 +6,19 @@
 #include "EvoAlgo/EvolutionaryAlgorithm.h"
 
 void EvolutionaryAlgorithm::EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness) {
-    std::cerr<<"     >>"<<fitness.size()<<" <<";
-    for(auto i : fitness)
-        std::cerr<<"FG: "<<i<<'\n';
+    std::cerr << "     >>" << fitness.size() << " <<";
+    for (auto i : fitness)
+        std::cerr << "FG: " << i << '\n';
     currentGenerationFitness.clear();
+
     currentGenerationFitness = fitness;
     auto bestChromos = selectBestChromosomes();
+
+    if (bestChromos.size() != howManySelected) {
+        currentGeneration = generatePopulation();
+        currentGenerationFitness.clear();
+        return;
+    }
     assert(bestChromos.size() == howManySelected);
     currentGeneration = crossoverChromosomesForNewGeneration(bestChromos);
     mutateCurrentGeneration();

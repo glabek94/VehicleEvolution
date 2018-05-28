@@ -32,8 +32,16 @@ void Application::run() {
 
     sf::Text ranking;
     ranking.setFont(font);
+    sf::FloatRect rankingRect = ranking.getLocalBounds();
 
-    sf::FloatRect textRect = ranking.getLocalBounds();
+
+    sf::Text info;
+    info.setFont(font);
+
+
+    int curGeneration = 1;
+    float record = 0.0;
+
     while (window.isOpen()) {
         //find furthest car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
@@ -132,11 +140,21 @@ void Application::run() {
             }
             std::cerr << std::endl;
 
+            auto best = *std::max_element(cars.begin(), cars.end(),
+                                          [](const Vehicle &c1, const Vehicle &c2) {
+                                              return c1.getBody()->GetPosition().x < c2.getBody()->GetPosition().x;
+                                          });
+            if (best.getBody()->GetPosition().x > record) {
+                record = best.getBody()->GetPosition().x;
+            }
+
             algo.EvaluateCurrentGenarationAndEvolve(fitness);
             cars.clear();
             std::fill(fitness.begin(), fitness.end(), 0.0);
 
             cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+            ++curGeneration;
+
         }
 
         for (auto &c : cars) {
@@ -157,16 +175,31 @@ void Application::run() {
 
         ranking.setString(txt);
 
-        ranking.setOrigin(textRect.left + textRect.width / 2.0f,
-                          textRect.top + textRect.height / 2.0f);
+//        ranking.setOrigin(rankingRect.left + rankingRect.width / 2.0f,
+//                          rankingRect.top + rankingRect.height / 2.0f);
         //ranking.setPosition(furthestCar->getChassisShape().getPosition());
         ranking.setPosition(view.getCenter().x - view.getSize().x / 2,
                             view.getCenter().y - view.getSize().y / 2);
         ranking.setCharacterSize(12);
         ranking.setFillColor(sf::Color::Black);
 
-        window.draw(ranking);
+        std::string infoText = "Generacja #" + std::to_string(curGeneration);
+        infoText += "\nRekord = " + std::to_string(record);
 
+        info.setString(infoText);
+
+        sf::FloatRect infoRect = info.getLocalBounds();
+
+        info.setOrigin(infoRect.left + infoRect.width / 0.9f,
+                       infoRect.top - infoRect.height / 2.0f);
+        info.setPosition(view.getCenter().x + view.getSize().x / 2,
+                         view.getCenter().y - view.getSize().y / 2);
+        info.setCharacterSize(12);
+        info.setFillColor(sf::Color::Blue);
+
+
+        window.draw(ranking);
+        window.draw(info);
         window.display();
     }
 }

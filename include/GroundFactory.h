@@ -50,7 +50,7 @@ private:
      */
     const float maxDegree = 0.78f;
 
-    float difficultyCoeff = 0.9f;
+    float difficultyCoeff = 0.95f;
 
     b2Vec2 previousChainEnd;
 

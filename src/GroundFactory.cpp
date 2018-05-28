@@ -24,8 +24,14 @@ std::shared_ptr<GroundChain> GroundFactory::createGround() {
         float curMax = maxDegree - difficultyCoeff * maxDegree;
         float deg = RandomNumberGenerator::Instance().GetFloatFromUniformDist(-curMax,
                                                                               curMax);
+
+        int curLength = RandomNumberGenerator::Instance().GetIntFromUniformDist(difficultyCoeff * edgeLength,
+                                                                                edgeLength);
+        if (curLength < 10)
+            curLength = 10;
+
         verts.emplace_back(
-                sf::Vector2f(verts[i - 1].x + edgeLength * std::cos(deg), verts[i - 1].y + edgeLength * std::sin(deg)));
+                sf::Vector2f(verts[i - 1].x + curLength * std::cos(deg), verts[i - 1].y + curLength * std::sin(deg)));
     }
 
     auto result = std::make_shared<GroundChain>(verts);
