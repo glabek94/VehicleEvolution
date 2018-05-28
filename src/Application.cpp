@@ -22,7 +22,9 @@ void Application::run() {
     EvolutionaryAlgorithm algo(10, 2, 0.1f);
 
     std::vector<Vehicle> cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+
     std::vector<float> fitness(cars.size());
+
     std::vector<std::shared_ptr<GroundChain>> ground;
 
     sf::Event event;
@@ -36,7 +38,8 @@ void Application::run() {
         //find furthest car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
                                             [](const Vehicle &a, const Vehicle &b) {
-                                                return a.getBody()->GetPosition().x > b.getBody()->GetPosition().x;
+                                                return a.getBody()->IsAwake() &&
+                                                       (a.getBody()->GetPosition().x >b.getBody()->GetPosition().x);
                                             });
 
         while (window.pollEvent(event)) {
@@ -62,22 +65,22 @@ void Application::run() {
                       view.getCenter().y + MouseY - view.getSize().y / 2);
         }
 
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-            //int MouseX = sf::Mouse::getPosition(window).x;
-            //int MouseY = sf::Mouse::getPosition(window).y;
-            //CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
-            //view.getCenter().y + MouseY - view.getSize().y / 2);
-            std::vector<float> fitness;
-            std::transform(cars.begin(), cars.end(), std::back_inserter(fitness), [&](Vehicle &c) {
-                auto toReturn = c.getBody()->GetPosition().x;
-                c.deleteBody();
-                return toReturn;
-            });
-
-            cars.clear();
-            algo.EvaluateCurrentGenarationAndEvolve(fitness);
-            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-        }
+//        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+//            //int MouseX = sf::Mouse::getPosition(window).x;
+//           //int MouseY = sf::Mouse::getPosition(window).y;
+//            //CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
+//            //view.getCenter().y + MouseY - view.getSize().y / 2);
+//            std::vector<float> fitness;
+//            std::transform(cars.begin(), cars.end(), std::back_inserter(fitness), [&](Vehicle &c) {
+//                auto toReturn = c.getBody()->GetPosition().x;
+//                c.deleteBody();
+//                return toReturn;
+//            });
+//
+//            cars.clear();
+//            algo.EvaluateCurrentGenarationAndEvolve(fitness);
+//            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+//        }
 
         World::getInstance().step(1 / 20.f, 8, 3);
         window.clear(sf::Color::White);
@@ -109,21 +112,31 @@ void Application::run() {
             window.draw(c->getShapes());
         }
 
-        //delete cars that are not moving and note their fitness
-        for(int i=0; i<cars.size(); ++i){
-            if(!cars[i].isMoving()) {
-                fitness[i] = cars[i].getBody()->GetPosition().x;
-                cars[i].deleteBody();
-                cars.erase(cars.begin() + i);
+
+        //check any vehicle is moving
+        bool someoneIsMoving = false;
+        for(auto& c : cars){
+            if(c.isMoving()) {
+                someoneIsMoving = true;
+
             }
+            else if(c.getBody()->IsAwake())
+                c.getBody()->SetAwake(false);
         }
 
-        if (cars.empty()) {
+        //new generation if no vehicle is moving
+        if(!someoneIsMoving) {
+            for (int i = 0; i < cars.size(); ++i) {
+                fitness[i] = cars[i].getBody()->GetPosition().x;
+                std::cerr<<i<<' '<<fitness[i]<<';';
+                cars[i].deleteBody();
+            }
+            cars.clear();
             algo.EvaluateCurrentGenarationAndEvolve(fitness);
+            fitness.clear();
             cars.clear();
             cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-            fitness.clear();
-
+            fitness.reserve(cars.size());
         }
 
         for (auto &c : cars) {
