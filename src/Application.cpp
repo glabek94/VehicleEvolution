@@ -19,7 +19,7 @@ void Application::run() {
     //empty call to initialize -- not needed
     World::getInstance();
 
-    EvolutionaryAlgorithm algo(10, 2, 0.1f);
+    EvolutionaryAlgorithm algo(20, 2, 0.1f);
 
     std::vector<Vehicle> cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
 
@@ -39,7 +39,7 @@ void Application::run() {
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
                                             [](const Vehicle &a, const Vehicle &b) {
                                                 return a.getBody()->IsAwake() &&
-                                                       (a.getBody()->GetPosition().x >b.getBody()->GetPosition().x);
+                                                       (a.getBody()->GetPosition().x > b.getBody()->GetPosition().x);
                                             });
 
         while (window.pollEvent(event)) {
@@ -58,12 +58,12 @@ void Application::run() {
             }
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B)) {
-            int MouseX = sf::Mouse::getPosition(window).x;
-            int MouseY = sf::Mouse::getPosition(window).y;
-            CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
-                      view.getCenter().y + MouseY - view.getSize().y / 2);
-        }
+//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B)) {
+//            int MouseX = sf::Mouse::getPosition(window).x;
+//            int MouseY = sf::Mouse::getPosition(window).y;
+//            CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
+//                      view.getCenter().y + MouseY - view.getSize().y / 2);
+//        }
 
 //        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 //            //int MouseX = sf::Mouse::getPosition(window).x;
@@ -115,22 +115,22 @@ void Application::run() {
 
         //check any vehicle is moving
         bool someoneIsMoving = false;
-        for(auto& c : cars){
-            if(c.isMoving()) {
+        for (auto &c : cars) {
+            if (c.isMoving()) {
                 someoneIsMoving = true;
 
-            }
-            else if(c.getBody()->IsAwake())
+            } else if (c.getBody()->IsAwake())
                 c.getBody()->SetAwake(false);
         }
 
         //new generation if no vehicle is moving
-        if(!someoneIsMoving) {
+        if (!someoneIsMoving) {
             for (int i = 0; i < cars.size(); ++i) {
                 fitness[i] = cars[i].getBody()->GetPosition().x;
-                std::cerr<<i<<' '<<fitness[i]<<';';
+                std::cerr << i << ' ' << fitness[i] << ';' << std::endl;
                 cars[i].deleteBody();
             }
+            std::cerr << std::endl;
             cars.clear();
             algo.EvaluateCurrentGenarationAndEvolve(fitness);
             fitness.clear();

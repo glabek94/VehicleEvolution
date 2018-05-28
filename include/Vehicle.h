@@ -53,7 +53,7 @@ public:
 
     Vehicle(const Chromosome& chromosome, float x_ = 250, float y_ = -300);
     const std::vector<sf::CircleShape>& getWheelShapes() const;
-    sf::ConvexShape getChassisShape() const;
+    const sf::ConvexShape& getChassisShape() const;
     void updateShape();
     b2Body* getBody() const;
     bool isMoving();

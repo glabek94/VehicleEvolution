@@ -14,10 +14,10 @@ class Chromosome
 public:
     static constexpr int VERTICES_NUMBER = 6;
     static constexpr int WHEELS_NUMBER = 2;
-    static constexpr float BODY_VERTEX_MIN = 1.0;
+    static constexpr float BODY_VERTEX_MIN = 0.0;
     static constexpr float BODY_VERTEX_MAX = 4.0;
     static constexpr float WHEEL_SIZE_MIN = 0.25;
-    static constexpr float WHEEL_SIZE_MAX = 1.0;
+    static constexpr float WHEEL_SIZE_MAX = 3.0;
 
     Chromosome();
     Chromosome(std::vector<std::pair<float, float>>& bodyVertices,

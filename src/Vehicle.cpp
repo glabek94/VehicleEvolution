@@ -7,7 +7,7 @@
 #include <World.h>
 #include "Vehicle.h"
 
-sf::ConvexShape Vehicle::getChassisShape() const {
+const sf::ConvexShape& Vehicle::getChassisShape() const {
     return chassisShape;
 }
 
@@ -176,7 +176,7 @@ const std::vector<sf::CircleShape> &Vehicle::getWheelShapes() const {
 }
 
 bool Vehicle::isMoving(){
-    if(std::abs(chassisBody->GetLinearVelocity().x)>= 0.3f )
+    if(std::abs(chassisBody->GetLinearVelocity().x)>= 0.5f )
         timeStopped=0;
     else
         timeStopped+=1.f;
