@@ -184,7 +184,7 @@ bool Vehicle::isMoving(){
     //if(timeStopped>15.f)
     //    chassisShape.setFillColor(sf::Color::Red);
             //std::cout<<std::abs(chassisBody->GetLinearVelocity().x)<<' '<<timeStopped<<std::endl;
-    return timeStopped < 40.0f;
+    return timeStopped < 100.0f;
 }
 
 void Vehicle::deleteBody()  {

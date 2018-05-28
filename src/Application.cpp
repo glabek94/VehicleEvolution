@@ -14,7 +14,7 @@ void Application::run() {
     font.loadFromFile("arial.ttf");
     sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Vehicle Evolution");
     sf::View view;
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(200);
 
     //empty call to initialize -- not needed
     World::getInstance();
@@ -131,12 +131,12 @@ void Application::run() {
                 cars[i].deleteBody();
             }
             std::cerr << std::endl;
-            cars.clear();
+
             algo.EvaluateCurrentGenarationAndEvolve(fitness);
-            fitness.clear();
             cars.clear();
+            std::fill(fitness.begin(), fitness.end(), 0.0);
+
             cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-            fitness.reserve(cars.size());
         }
 
         for (auto &c : cars) {

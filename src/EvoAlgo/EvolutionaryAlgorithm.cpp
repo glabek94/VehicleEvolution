@@ -6,6 +6,10 @@
 #include "EvoAlgo/EvolutionaryAlgorithm.h"
 
 void EvolutionaryAlgorithm::EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness) {
+    std::cerr<<"     >>"<<fitness.size()<<" <<";
+    for(auto i : fitness)
+        std::cerr<<"FG: "<<i<<'\n';
+    currentGenerationFitness.clear();
     currentGenerationFitness = fitness;
     auto bestChromos = selectBestChromosomes();
     assert(bestChromos.size() == howManySelected);
@@ -21,6 +25,7 @@ const std::vector<Chromosome> &EvolutionaryAlgorithm::GetCurrentGeneration() con
 std::vector<Chromosome> EvolutionaryAlgorithm::selectBestChromosomes() {
     std::vector<std::pair<Chromosome, float>> chromosWithFitness;
     for (size_t i = 0; i < currentGeneration.size(); ++i) {
+        //std::cerr<<"G: "<<i<<' '<<currentGenerationFitness[i]<<'\n';
         chromosWithFitness.emplace_back(std::make_pair(currentGeneration[i], currentGenerationFitness[i]));
     }
 
@@ -32,6 +37,7 @@ std::vector<Chromosome> EvolutionaryAlgorithm::selectBestChromosomes() {
 //                          return left.second > right.second;
 //                      });
 
+    //std::cerr<<"BEG";
     for (size_t i = 0; i < howManySelected; ++i) {
         float totalFitness = std::accumulate(chromosWithFitness.begin(), chromosWithFitness.end(), 0.0f,
                                              [](float acc, std::pair<Chromosome, float> const &ch) {
@@ -42,13 +48,14 @@ std::vector<Chromosome> EvolutionaryAlgorithm::selectBestChromosomes() {
         for (auto it = chromosWithFitness.begin(); it != chromosWithFitness.end(); ++it) {
             currFit += (*it).second;
             if (currFit > luckyVote) {
+                //std::cerr<<it->second<<' ';
                 toReturn.emplace_back((*it).first);
                 chromosWithFitness.erase(it);
                 break;
             }
         }
     }
-
+    //std::cerr<<"END\n";
     return toReturn;
 }
 
