@@ -46,8 +46,13 @@ void Application::run() {
         //find furthest car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
                                             [](const Vehicle &a, const Vehicle &b) {
-                                                return a.getBody()->IsAwake() &&
-                                                       (a.getBody()->GetPosition().x > b.getBody()->GetPosition().x);
+                                                if (a.getBody()->IsAwake() && b.getBody()->IsAwake()) {
+                                                    return a.getBody()->GetPosition().x > b.getBody()->GetPosition().x;
+                                                } else if (a.getBody()->IsAwake()) {
+                                                    return true;
+                                                } else {
+                                                    return false;
+                                                }
                                             });
 
         while (window.pollEvent(event)) {
