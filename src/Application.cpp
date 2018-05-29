@@ -2,7 +2,7 @@
 // Created by dawid on 27.04.18.
 //
 
-#include <EvoAlgo/EvolutionaryAlgorithm.h>
+#include <EvolutionaryAlgorithm.h>
 #include "Application.h"
 #include "Vehicle.h"
 #include "GroundChain.h"

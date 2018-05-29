@@ -12,8 +12,8 @@ find_library(LIBSFML-WINDOW sfml-window ../lib)
 find_library(LIBSFML-SYSTEM sfml-system ../lib)
 
 add_executable(VehicleEvolution main.cpp Vehicle.cpp ../include/Vehicle.h
-        Application.cpp ../include/Application.h EvoAlgo/Chromosome.cpp ../include/EvoAlgo/Chromosome.h
-        EvoAlgo/EvolutionaryAlgorithm.cpp ../include/EvoAlgo/EvolutionaryAlgorithm.h
+        Application.cpp ../include/Application.h Chromosome.cpp ../include/Chromosome.h
+        EvolutionaryAlgorithm.cpp ../include/EvolutionaryAlgorithm.h
         ../include/RandomNumberGenerator.h GroundFactory.cpp ../include/GroundFactory.h
         GroundChain.cpp ../include/GroundChain.h ../include/Constants.h
         ../include/World.h World.cpp)

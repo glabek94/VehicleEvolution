@@ -3,7 +3,7 @@
 //
 
 
-#include "EvoAlgo/EvolutionaryAlgorithm.h"
+#include "EvolutionaryAlgorithm.h"
 
 void EvolutionaryAlgorithm::EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness) {
     std::cerr << "     >>" << fitness.size() << " <<";

@@ -1,5 +1,5 @@
 #include <Application.h>
-#include <EvoAlgo/EvolutionaryAlgorithm.h>
+#include <EvolutionaryAlgorithm.h>
 
 int main() {
     Application app;

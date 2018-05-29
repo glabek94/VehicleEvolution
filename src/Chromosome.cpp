@@ -2,7 +2,7 @@
 // Created by dawid on 07.05.18.
 //
 
-#include "EvoAlgo/Chromosome.h"
+#include "Chromosome.h"
 
 constexpr float Chromosome::BODY_VERTEX_MIN;
 constexpr float Chromosome::BODY_VERTEX_MAX;

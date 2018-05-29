@@ -32,7 +32,7 @@ private:
     const float32 defaultMaxMotorTorque = 40.f;
     const bool    defaultEnableMotor = true;
     const float32 defaultFrequencyHz = 8.f;
-    const float32 defaultDampingRatio = 0.7f;
+    const float32 defaultDampingRatio = 0.0f;//0.7f;
 
 public:
     static World& getInstance();

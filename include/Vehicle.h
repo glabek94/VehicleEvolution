@@ -11,7 +11,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
-#include <EvoAlgo/Chromosome.h>
+#include <Chromosome.h>
 #include "Constants.h"
 
 class Vehicle
