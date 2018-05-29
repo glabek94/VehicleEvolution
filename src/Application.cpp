@@ -19,13 +19,16 @@ void Application::run() {
     //empty call to initialize -- not needed
     World::getInstance();
 
-    EvolutionaryAlgorithm algo(20, 2, 0.1f);
+    EvolutionaryAlgorithm algo(30, 2, 0.1f);
 
     std::vector<Vehicle> cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
 
     std::vector<float> fitness(cars.size());
 
     std::vector<std::shared_ptr<GroundChain>> ground;
+
+
+    std::vector<sf::RectangleShape> recordMarks;
 
     sf::Event event;
     ground.emplace_back(GroundFactory::getInstance().createGround());
@@ -138,6 +141,14 @@ void Application::run() {
 
         //new generation if no vehicle is moving
         if (!someoneIsMoving) {
+
+            sf::RectangleShape recordMark(sf::Vector2f(7, 2*view.getSize().y));
+            recordMark.setPosition(furthestCar->getChassisShape().getPosition() + sf::Vector2f(0,-view.getSize().y));
+            sf::Color fc = furthestCar->getChassisShape().getFillColor();
+            fc.a = 100;
+            recordMark.setFillColor(fc);
+            recordMarks.emplace_back(recordMark);
+
             for (int i = 0; i < cars.size(); ++i) {
                 fitness[i] = computeFitness(cars[i]);
                 std::cerr << i << ' ' << fitness[i] << ';' << std::endl;
@@ -162,6 +173,9 @@ void Application::run() {
 
         }
 
+        for(auto &l : recordMarks)
+            window.draw(l);
+
         for (auto &c : cars) {
             c.updateShape();
         }
@@ -177,6 +191,7 @@ void Application::run() {
             txt += std::to_string(c.getBody()->GetPosition().x);
             txt += '\n';
         }
+
 
         ranking.setString(txt);
 
