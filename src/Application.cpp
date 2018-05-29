@@ -141,11 +141,13 @@ void Application::run() {
 
         //new generation if no vehicle is moving
         if (!someoneIsMoving) {
-
+            auto globalFurthestCar = std::max_element(cars.begin(), cars.end(), [](Vehicle& a, Vehicle& b) -> bool {
+                                                   return a.getBody()->GetPosition().x < b.getBody()->GetPosition().x;
+            });
             sf::RectangleShape recordMark(sf::Vector2f(7, 2*view.getSize().y));
-            recordMark.setPosition(furthestCar->getChassisShape().getPosition() + sf::Vector2f(0,-view.getSize().y));
-            sf::Color fc = furthestCar->getChassisShape().getFillColor();
-            fc.a = 100;
+            recordMark.setPosition(globalFurthestCar->getChassisShape().getPosition() + sf::Vector2f(0,-view.getSize().y));
+            sf::Color fc = globalFurthestCar->getChassisShape().getFillColor();
+            fc.a = 80;
             recordMark.setFillColor(fc);
             recordMarks.emplace_back(recordMark);
 
