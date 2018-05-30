@@ -10,15 +10,44 @@
 #include "Constants.h"
 #include "World.h"
 #include "Vehicle.h"
+#include "GroundChain.h"
+#include "EvolutionaryAlgorithm.h"
 
 class Application {
-public:
-    //const float SCALE = 30.f;
-    void run();
-    void CreateBox(int MouseX, int MouseY);
-    std::vector<b2Body*> boxes;
+private:
+    sf::Font font;
 
+    sf::RenderWindow window;
+
+    sf::View view;
+
+    EvolutionaryAlgorithm algo;
+
+    std::vector<Vehicle> cars;
+
+    std::vector<float> fitness;
+
+    std::vector<std::shared_ptr<GroundChain>> ground;
+
+    std::vector<sf::RectangleShape> recordMarks;
+
+    sf::Text ranking;
+
+    sf::FloatRect rankingRect;
+
+    sf::Text info;
+public:
+    void run();
+    Application();
+
+private:
     float computeFitness(const Vehicle &car);
+
+    void newGeneration(int &curGeneration, float &record);
+
+    void drawRankingAndInfo(int curGeneration, float record, const std::string &txt);
+
+    std::string drawCars();
 };
 
 

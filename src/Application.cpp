@@ -8,54 +8,35 @@
 #include "GroundChain.h"
 #include "GroundFactory.h"
 
-void Application::run() {
 
-    sf::Font font;
-    font.loadFromFile("arial.ttf");
-    sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Vehicle Evolution");
-    sf::View view;
+Application::Application() :
+        window(sf::VideoMode(800, 600, 32), "Vehicle Evolution"),
+        algo(30, 2, 0.1f),
+        cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end()){
     window.setFramerateLimit(200);
     window.setKeyRepeatEnabled(false);
-
-    //empty call to initialize -- not needed
     World::getInstance();
-
-    EvolutionaryAlgorithm algo(30, 2, 0.1f);
-
-    std::vector<Vehicle> cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-
-    std::vector<float> fitness(cars.size());
-
-    std::vector<std::shared_ptr<GroundChain>> ground;
-
-    std::vector<sf::RectangleShape> recordMarks;
-
-    sf::Event event;
+    fitness.resize(cars.size());
     ground.emplace_back(GroundFactory::getInstance().createGround());
-
-    sf::Text ranking;
+    font.loadFromFile("arial.ttf");
     ranking.setFont(font);
-    sf::FloatRect rankingRect = ranking.getLocalBounds();
-
-
-    sf::Text info;
+    rankingRect = ranking.getLocalBounds();
     info.setFont(font);
+}
 
-
+void Application::run() {
+    sf::Event event;
     int curGeneration = 1;
     float record = 0.0;
     while (window.isOpen()) {
         bool resetGeneration = false;
-        //find furthest car
+
+        //find furthest moving car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
                                             [](const Vehicle &a, const Vehicle &b) {
                                                 if (a.getBody()->IsAwake() && b.getBody()->IsAwake()) {
                                                     return a.getBody()->GetPosition().x > b.getBody()->GetPosition().x;
-                                                } else if (a.getBody()->IsAwake()) {
-                                                    return true;
-                                                } else {
-                                                    return false;
-                                                }
+                                                } return a.getBody()->IsAwake();
                                             });
 
         while (window.pollEvent(event)) {
@@ -79,41 +60,9 @@ void Application::run() {
         }
 
 
-//        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-//            //int MouseX = sf::Mouse::getPosition(window).x;
-//           //int MouseY = sf::Mouse::getPosition(window).y;
-//            //CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
-//            //view.getCenter().y + MouseY - view.getSize().y / 2);
-//            std::vector<float> fitness;
-//            std::transform(cars.begin(), cars.end(), std::back_inserter(fitness), [&](Vehicle &c) {
-//                auto toReturn = c.getBody()->GetPosition().x;
-//                c.deleteBody();
-//                return toReturn;
-//            });
-//
-//            cars.clear();
-//            algo.EvaluateCurrentGenarationAndEvolve(fitness);
-//            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-//        }
-
         World::getInstance().step(1 / 20.f, 8, 3);
         window.clear(sf::Color::White);
-
-        for (auto b : boxes) {
-            sf::RectangleShape rs;
-            rs.setFillColor(sf::Color::Red);
-            rs.setOrigin(16, 16);
-            rs.setSize(sf::Vector2f(32, 32));
-            rs.setPosition(SCALE * b->GetPosition().x, SCALE * b->GetPosition().y);
-            rs.setOutlineColor(sf::Color::Black);
-            rs.setOutlineThickness(1.0f);
-            rs.rotate(b->GetAngle() * 180 / b2_pi);
-            window.draw(rs);
-        }
-
-
         view.setCenter(furthestCar->getChassisShape().getPosition());
-        //view.setCenter(0, 0);
         window.setView(view);
 
         // check if new GroundChain needed
@@ -139,50 +88,26 @@ void Application::run() {
 
         //new generation if no vehicle is moving
         if (!someoneIsMoving || resetGeneration) {
-            auto globalFurthestCar = std::max_element(cars.begin(), cars.end(), [](Vehicle& a, Vehicle& b) -> bool {
-                                                   return a.getBody()->GetPosition().x < b.getBody()->GetPosition().x;
-            });
-            sf::RectangleShape recordMark(sf::Vector2f(7, 2*view.getSize().y));
-            recordMark.setPosition(globalFurthestCar->getChassisShape().getPosition() + sf::Vector2f(0,-view.getSize().y));
-            sf::Color fc = globalFurthestCar->getChassisShape().getFillColor();
-            fc.a = 80;
-            recordMark.setFillColor(fc);
-            recordMarks.emplace_back(recordMark);
-
-            for (int i = 0; i < cars.size(); ++i) {
-                fitness[i] = computeFitness(cars[i]);
-                std::cerr << i << ' ' << fitness[i] << ';' << std::endl;
-                cars[i].deleteBody();
-            }
-            std::cerr << std::endl;
-
-            auto best = *std::max_element(cars.begin(), cars.end(),
-                                          [](const Vehicle &c1, const Vehicle &c2) {
-                                              return c1.getBody()->GetPosition().x < c2.getBody()->GetPosition().x;
-                                          });
-            if (best.getBody()->GetPosition().x > record) {
-                record = best.getBody()->GetPosition().x;
-            }
-
-            algo.EvaluateCurrentGenarationAndEvolve(fitness);
-            cars.clear();
-            std::fill(fitness.begin(), fitness.end(), 0.0);
-
-            cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
-            ++curGeneration;
-
+            newGeneration(curGeneration, record);
         }
 
-        for(auto &l : recordMarks)
+        std::string txt = drawCars();
+        drawRankingAndInfo(curGeneration, record, txt);
+        window.display();
+    }
+}
+
+std::string Application::drawCars()  {
+    for(auto &l : recordMarks)
             window.draw(l);
 
-        for (auto &c : cars) {
+    for (auto &c : cars) {
             c.updateShape();
         }
 
-        std::string txt = "";
+    std::string txt = "";
 
-        for (auto const &c : cars) {
+    for (auto const &c : cars) {
             window.draw(c.getChassisShape());
 
             for (auto const &wheel: c.getWheelShapes())
@@ -191,39 +116,68 @@ void Application::run() {
             txt += std::to_string(c.getBody()->GetPosition().x);
             txt += '\n';
         }
-
-
-        ranking.setString(txt);
-
-//        ranking.setOrigin(rankingRect.left + rankingRect.width / 2.0f,
-//                          rankingRect.top + rankingRect.height / 2.0f);
-        //ranking.setPosition(furthestCar->getChassisShape().getPosition());
-        ranking.setPosition(view.getCenter().x - view.getSize().x / 2,
-                            view.getCenter().y - view.getSize().y / 2);
-        ranking.setCharacterSize(12);
-        ranking.setFillColor(sf::Color::Black);
-
-        std::string infoText = "Generacja #" + std::to_string(curGeneration);
-        infoText += "\nRekord = " + std::to_string(record);
-
-        info.setString(infoText);
-
-        sf::FloatRect infoRect = info.getLocalBounds();
-
-        info.setOrigin(infoRect.left + infoRect.width / 0.9f,
-                       infoRect.top - infoRect.height / 2.0f);
-        info.setPosition(view.getCenter().x + view.getSize().x / 2,
-                         view.getCenter().y - view.getSize().y / 2);
-        info.setCharacterSize(12);
-        info.setFillColor(sf::Color::Blue);
-
-
-        window.draw(ranking);
-        window.draw(info);
-        window.display();
-    }
+    return txt;
 }
 
+void Application::drawRankingAndInfo(int curGeneration, float record, const std::string &txt)  {
+
+    ranking.setString(txt);
+    ranking.setPosition(view.getCenter().x - view.getSize().x / 2,
+                        view.getCenter().y - view.getSize().y / 2);
+    ranking.setCharacterSize(12);
+    ranking.setFillColor(sf::Color::Black);
+
+    std::string infoText = "Generacja #" + std::to_string(curGeneration);
+    infoText += "\nRekord = " + std::to_string(record);
+
+    info.setString(infoText);
+
+    sf::FloatRect infoRect = info.getLocalBounds();
+
+    info.setOrigin(infoRect.left + infoRect.width / 0.9f,
+                       infoRect.top - infoRect.height / 2.0f);
+    info.setPosition(view.getCenter().x + view.getSize().x / 2,
+                     view.getCenter().y - view.getSize().y / 2);
+    info.setCharacterSize(12);
+    info.setFillColor(sf::Color::Blue);
+
+
+    window.draw(ranking);
+    window.draw(info);
+}
+
+void Application::newGeneration(int &curGeneration, float &record) {
+    auto globalFurthestCar = max_element(cars.begin(), cars.end(), [](Vehicle& a, Vehicle& b) -> bool {
+                                                   return a.getBody()->GetPosition().x < b.getBody()->GetPosition().x;
+            });
+    sf::RectangleShape recordMark(sf::Vector2f(7, 2 * view.getSize().y));
+    recordMark.setPosition(globalFurthestCar->getChassisShape().getPosition() + sf::Vector2f(0, -view.getSize().y));
+    sf::Color fc = globalFurthestCar->getChassisShape().getFillColor();
+    fc.a = 80;
+    recordMark.setFillColor(fc);
+    recordMarks.emplace_back(recordMark);
+
+    for (int i = 0; i < cars.size(); ++i) {
+                fitness[i] = computeFitness(cars[i]);
+                cars[i].deleteBody();
+            }
+    std::cerr << std::endl;
+
+    auto best = *max_element(cars.begin(), cars.end(),
+                             [](const Vehicle &c1, const Vehicle &c2) {
+                                              return c1.getBody()->GetPosition().x < c2.getBody()->GetPosition().x;
+                                          });
+    if (best.getBody()->GetPosition().x > record) {
+                record = best.getBody()->GetPosition().x;
+            }
+
+    algo.EvaluateCurrentGenarationAndEvolve(fitness);
+    cars.clear();
+    fill(fitness.begin(), fitness.end(), 0.0);
+
+    cars = std::vector<Vehicle>(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end());
+    ++curGeneration;
+}
 
 
 float Application::computeFitness(const Vehicle &car) {
@@ -231,4 +185,5 @@ float Application::computeFitness(const Vehicle &car) {
     if (dist < 20.0) { return 0.0f; }
     return dist;
 }
+
 

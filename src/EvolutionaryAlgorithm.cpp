@@ -6,9 +6,6 @@
 #include "EvolutionaryAlgorithm.h"
 
 void EvolutionaryAlgorithm::EvaluateCurrentGenarationAndEvolve(std::vector<float> fitness) {
-    std::cerr << "     >>" << fitness.size() << " <<";
-    for (auto i : fitness)
-        std::cerr << "FG: " << i << '\n';
     currentGenerationFitness.clear();
 
     currentGenerationFitness = fitness;
