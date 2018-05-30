@@ -15,6 +15,7 @@ void Application::run() {
     sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Vehicle Evolution");
     sf::View view;
     window.setFramerateLimit(200);
+    window.setKeyRepeatEnabled(false);
 
     //empty call to initialize -- not needed
     World::getInstance();
@@ -26,7 +27,6 @@ void Application::run() {
     std::vector<float> fitness(cars.size());
 
     std::vector<std::shared_ptr<GroundChain>> ground;
-
 
     std::vector<sf::RectangleShape> recordMarks;
 
@@ -44,8 +44,8 @@ void Application::run() {
 
     int curGeneration = 1;
     float record = 0.0;
-
     while (window.isOpen()) {
+        bool resetGeneration = false;
         //find furthest car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
                                             [](const Vehicle &a, const Vehicle &b) {
@@ -60,6 +60,10 @@ void Application::run() {
 
         while (window.pollEvent(event)) {
             switch (event.type) {
+                case sf::Event::KeyReleased:
+                    if(event.key.code==sf::Keyboard::Enter)
+                        resetGeneration = true;
+                    break;
                 case sf::Event::Closed:
                     window.close();
                     break;
@@ -74,12 +78,6 @@ void Application::run() {
             }
         }
 
-//        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B)) {
-//            int MouseX = sf::Mouse::getPosition(window).x;
-//            int MouseY = sf::Mouse::getPosition(window).y;
-//            CreateBox(view.getCenter().x + MouseX - view.getSize().x / 2,
-//                      view.getCenter().y + MouseY - view.getSize().y / 2);
-//        }
 
 //        if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 //            //int MouseX = sf::Mouse::getPosition(window).x;
@@ -140,7 +138,7 @@ void Application::run() {
         }
 
         //new generation if no vehicle is moving
-        if (!someoneIsMoving) {
+        if (!someoneIsMoving || resetGeneration) {
             auto globalFurthestCar = std::max_element(cars.begin(), cars.end(), [](Vehicle& a, Vehicle& b) -> bool {
                                                    return a.getBody()->GetPosition().x < b.getBody()->GetPosition().x;
             });
@@ -227,20 +225,10 @@ void Application::run() {
 }
 
 
-void Application::CreateBox(int MouseX, int MouseY) {
-    b2Body *Body = World::getInstance().createDynamicBody(MouseX / SCALE, MouseY / SCALE);
-    b2PolygonShape Shape;
-    Shape.SetAsBox((32.f / 2) / SCALE, (32.f / 2) / SCALE);
-    b2FixtureDef FixtureDef;
-    FixtureDef.density = 1.f;
-    FixtureDef.friction = 0.7f;
-    FixtureDef.shape = &Shape;
-    Body->CreateFixture(&FixtureDef);
-    boxes.push_back(Body);
-}
 
 float Application::computeFitness(const Vehicle &car) {
     auto dist = car.getBody()->GetPosition().x;
     if (dist < 20.0) { return 0.0f; }
     return dist;
 }
+
