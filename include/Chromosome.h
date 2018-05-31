@@ -17,12 +17,12 @@
  */
 class Chromosome {
 public:
-    static constexpr int VERTICES_NUMBER = 6;
-    static constexpr int WHEELS_NUMBER = 2;
-    static constexpr float BODY_VERTEX_MIN = 0.0;
-    static constexpr float BODY_VERTEX_MAX = 4.0;
-    static constexpr float WHEEL_SIZE_MIN = 0.25;
-    static constexpr float WHEEL_SIZE_MAX = 1.5;
+    static const int VERTICES_NUMBER;
+    static const int WHEELS_NUMBER;
+    static const float BODY_VERTEX_MIN;
+    static const float BODY_VERTEX_MAX;
+    static const float WHEEL_SIZE_MIN;
+    static const float WHEEL_SIZE_MAX;
 
     /**
      * Default constructor. Required for std.

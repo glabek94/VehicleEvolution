@@ -27,15 +27,15 @@ add_executable(vehicle_tests VehicleTests.cpp ${VehicleEvolutionSrc})
 
 target_include_directories(vehicle_tests PRIVATE ${Boost_INCLUDE_DIRS} PUBLIC ../include/)
 
-target_link_libraries(VehicleEvolution ${LIBBOX2D})
-target_link_libraries(VehicleEvolution ${LIBSFML-GRAPHICS})
-target_link_libraries(VehicleEvolution ${LIBSFML-WINDOW})
-target_link_libraries(VehicleEvolution ${LIBSFML-SYSTEM})
+#target_link_libraries(VehicleEvolution ${LIBBOX2D})
+#target_link_libraries(VehicleEvolution ${LIBSFML-GRAPHICS})
+#target_link_libraries(VehicleEvolution ${LIBSFML-WINDOW})
+#target_link_libraries(VehicleEvolution ${LIBSFML-SYSTEM})
 
-#target_link_libraries(vehicle_tests PUBLIC "${LIBBOX2D}")
-#target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-graphics.so")
-#target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-window.so")
-#target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-system.so")
+target_link_libraries(vehicle_tests PUBLIC "${LIBBOX2D}")
+target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-graphics.so")
+target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-window.so")
+target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-system.so")
 
 # declares a test with our executable
 add_test(NAME VehicleTests COMMAND vehicle_tests)
