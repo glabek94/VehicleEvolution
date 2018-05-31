@@ -4,8 +4,8 @@
 
 #include "Chromosome.h"
 
-const int Chromosome::VERTICES_NUMBER(6);
-const int Chromosome::WHEELS_NUMBER(2);
+const size_t Chromosome::VERTICES_NUMBER(6);
+const size_t Chromosome::WHEELS_NUMBER(2);
 const float Chromosome::BODY_VERTEX_MIN(0.0);
 const float Chromosome::BODY_VERTEX_MAX(4.0);
 const float Chromosome::WHEEL_SIZE_MIN(0.25);

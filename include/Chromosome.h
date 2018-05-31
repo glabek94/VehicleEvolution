@@ -17,8 +17,8 @@
  */
 class Chromosome {
 public:
-    static const int VERTICES_NUMBER;
-    static const int WHEELS_NUMBER;
+    static const size_t VERTICES_NUMBER;
+    static const size_t WHEELS_NUMBER;
     static const float BODY_VERTEX_MIN;
     static const float BODY_VERTEX_MAX;
     static const float WHEEL_SIZE_MIN;

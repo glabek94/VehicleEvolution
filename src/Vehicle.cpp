@@ -166,7 +166,7 @@ Vehicle::createBody(const std::vector<float> &wheelSizes, const std::vector<int>
         i++;
     }
 
-    for (int i = 0; i < wheelSizes.size(); i++) {
+    for (size_t i = 0; i < wheelSizes.size(); i++) {
         springs[i] = World::getInstance().createWheelJoint(chassisBody, wheelBodies[i], wheelBodies[i]->GetPosition());
     }
 }

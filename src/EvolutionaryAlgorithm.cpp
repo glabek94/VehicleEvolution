@@ -193,7 +193,7 @@ Chromosome EvolutionaryAlgorithm::generateRandomChromosme() {
     std::vector<int> newWheelVertices;
     std::vector<float> newWheelSizes;
 
-    for (int i = 0; i < Chromosome::VERTICES_NUMBER; ++i) {
+    for (size_t i = 0; i < Chromosome::VERTICES_NUMBER; ++i) {
         float v1 = RandomNumberGenerator::Instance().GetSignedFloatFromRangeUniform(Chromosome::BODY_VERTEX_MIN,
                                                                                     Chromosome::BODY_VERTEX_MAX);
         float v2 = RandomNumberGenerator::Instance().GetSignedFloatFromRangeUniform(Chromosome::BODY_VERTEX_MIN,
@@ -202,7 +202,7 @@ Chromosome EvolutionaryAlgorithm::generateRandomChromosme() {
         newBodyVertices.emplace_back(std::make_pair(v1, v2));
     }
 
-    for (int i = 0; i < Chromosome::WHEELS_NUMBER; ++i) {
+    for (size_t i = 0; i < Chromosome::WHEELS_NUMBER; ++i) {
         float size = RandomNumberGenerator::Instance().GetFloatFromUniformDist(Chromosome::WHEEL_SIZE_MIN,
                                                                                Chromosome::WHEEL_SIZE_MAX);
 

@@ -11,7 +11,7 @@ GroundChain::GroundChain(std::vector<sf::Vector2f>& verts)
     body = World::getInstance().createStaticBody(0,0);
 
     b2Vec2 tmp[verts.size()];
-    for(int i=0; i<verts.size(); ++i){
+    for(size_t i=0; i<verts.size(); ++i){
         tmp[i] = b2Vec2(verts[i].x/SCALE,verts[i].y/SCALE);
     }
     b2ChainShape chainShape;
@@ -25,7 +25,7 @@ GroundChain::GroundChain(std::vector<sf::Vector2f>& verts)
     body->CreateFixture(&FixtureDef);
 
 
-    for(int i=0; i<verts.size(); ++i){
+    for(size_t i=0; i<verts.size(); ++i){
         lineStrip[i].position = verts[i];
         lineStrip[i].color = sf::Color::Black;
     }

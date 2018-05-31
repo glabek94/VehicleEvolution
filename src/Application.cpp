@@ -157,7 +157,7 @@ void Application::newGeneration(int &curGeneration, float &record) {
     recordMark.setFillColor(fc);
     recordMarks.emplace_back(recordMark);
 
-    for (int i = 0; i < cars.size(); ++i) {
+    for (size_t i = 0; i < cars.size(); ++i) {
                 fitness[i] = computeFitness(cars[i]);
                 cars[i].deleteBody();
             }
