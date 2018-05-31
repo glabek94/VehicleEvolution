@@ -14,8 +14,7 @@
 #include <Chromosome.h>
 #include "Constants.h"
 
-class Vehicle
-{
+class Vehicle {
 private:
 
     std::vector<std::pair<float, float>> vertices;
@@ -52,11 +51,17 @@ private:
 public:
 
     Vehicle(const Chromosome& chromosome, float x_ = 250, float y_ = -300);
+
     const std::vector<sf::CircleShape>& getWheelShapes() const;
+
     const sf::ConvexShape& getChassisShape() const;
+
     void updateShape();
+
     b2Body* getBody() const;
+
     bool isMoving();
+
     void deleteBody();
 
 };
