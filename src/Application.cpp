@@ -157,10 +157,6 @@ void Application::newGeneration(int &curGeneration, float &record) {
     recordMark.setFillColor(fc);
     recordMarks.emplace_back(recordMark);
 
-    for (size_t i = 0; i < cars.size(); ++i) {
-                fitness[i] = computeFitness(cars[i]);
-                cars[i].deleteBody();
-            }
     std::cerr << std::endl;
 
     auto best = *max_element(cars.begin(), cars.end(),
@@ -171,6 +167,10 @@ void Application::newGeneration(int &curGeneration, float &record) {
                 record = best.getBody()->GetPosition().x;
             }
 
+    for (int i = 0; i < cars.size(); ++i) {
+        fitness[i] = computeFitness(cars[i]);
+        cars[i].deleteBody();
+    }
     algo.EvaluateCurrentGenarationAndEvolve(fitness);
     cars.clear();
     fill(fitness.begin(), fitness.end(), 0.0);
