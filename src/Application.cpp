@@ -167,7 +167,7 @@ void Application::newGeneration(int &curGeneration, float &record) {
                 record = best.getBody()->GetPosition().x;
             }
 
-    for (int i = 0; i < cars.size(); ++i) {
+    for (size_t i = 0; i < cars.size(); ++i) {
         fitness[i] = computeFitness(cars[i]);
         cars[i].deleteBody();
     }
