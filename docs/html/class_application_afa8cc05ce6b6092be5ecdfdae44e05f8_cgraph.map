@@ -1,0 +1,4 @@
+<map id="Application::Application" name="Application::Application">
+<area shape="rect" id="node2" href="$class_world.html#a4b8dd3d034818912c1847ab8cc130d1d" title="World::getInstance" alt="" coords="238,5,370,32"/>
+<area shape="rect" id="node3" href="$class_ground_factory.html#ae4d86afb7ca86151973058436f7d9b76" title="GroundFactory::getInstance" alt="" coords="212,56,396,83"/>
+</map>

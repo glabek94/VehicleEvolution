@@ -1,0 +1,7 @@
+<map id="BOOST_AUTO_TEST_CASE" name="BOOST_AUTO_TEST_CASE">
+<area shape="rect" id="node2" href="$class_world.html#a4b8dd3d034818912c1847ab8cc130d1d" title="World::getInstance" alt="" coords="276,5,408,32"/>
+<area shape="rect" id="node3" href="$class_world.html#a098e3ab0c2e77e0888b20ca511a6021a" title="World::getBodyCount" alt="" coords="269,56,415,83"/>
+<area shape="rect" id="node4" href="$class_world.html#a93b244966b95c651ed42f72d4a055984" title="World::createDynamicBody" alt="" coords="251,107,433,133"/>
+<area shape="rect" id="node5" href="$class_world.html#a709ad028844d3c38cb4a5de45b5df4b2" title="World::createStaticBody" alt="" coords="260,157,424,184"/>
+<area shape="rect" id="node6" href="$class_world.html#ab1a1d49cbc4faa417f060c261cfb0b9f" title="World::destroyBody" alt="" coords="273,208,411,235"/>
+</map>

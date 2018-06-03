@@ -1,0 +1,4 @@
+<map id="Vehicle::deleteBody" name="Vehicle::deleteBody">
+<area shape="rect" id="node2" href="$class_world.html#a4b8dd3d034818912c1847ab8cc130d1d" title="World::getInstance" alt="" coords="195,5,327,32"/>
+<area shape="rect" id="node3" href="$class_world.html#ab1a1d49cbc4faa417f060c261cfb0b9f" title="World::destroyBody" alt="" coords="192,56,329,83"/>
+</map>
