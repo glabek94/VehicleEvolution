@@ -12,7 +12,7 @@
 Application::Application() :
         window(sf::VideoMode(800, 600, 32), "Vehicle Evolution"),
         algo(30, 2, 0.1f),
-        cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end()){
+        cars(algo.GetCurrentGeneration().begin(), algo.GetCurrentGeneration().end()) {
     window.setFramerateLimit(200);
     window.setKeyRepeatEnabled(false);
     World::getInstance();
@@ -33,16 +33,17 @@ void Application::run() {
 
         //find furthest moving car
         auto furthestCar = std::min_element(cars.begin(), cars.end(),
-                                            [](const Vehicle &a, const Vehicle &b) {
+                                            [](const Vehicle& a, const Vehicle& b) {
                                                 if (a.getBody()->IsAwake() && b.getBody()->IsAwake()) {
                                                     return a.getBody()->GetPosition().x > b.getBody()->GetPosition().x;
-                                                } return a.getBody()->IsAwake();
+                                                }
+                                                return a.getBody()->IsAwake();
                                             });
 
         while (window.pollEvent(event)) {
             switch (event.type) {
                 case sf::Event::KeyReleased:
-                    if(event.key.code==sf::Keyboard::Enter)
+                    if (event.key.code == sf::Keyboard::Enter)
                         resetGeneration = true;
                     break;
                 case sf::Event::Closed:
@@ -71,14 +72,14 @@ void Application::run() {
             ground.emplace_back(GroundFactory::getInstance().createGround());
         }
 
-        for (const auto &c : ground) {
+        for (const auto& c : ground) {
             window.draw(c->getShapes());
         }
 
 
         //check any vehicle is moving
         bool someoneIsMoving = false;
-        for (auto &c : cars) {
+        for (auto& c : cars) {
             if (c.isMoving()) {
                 someoneIsMoving = true;
 
@@ -97,29 +98,29 @@ void Application::run() {
     }
 }
 
-std::string Application::drawCars()  {
-    for(auto &l : recordMarks)
-            window.draw(l);
+std::string Application::drawCars() {
+    for (auto& l : recordMarks)
+        window.draw(l);
 
-    for (auto &c : cars) {
-            c.updateShape();
-        }
+    for (auto& c : cars) {
+        c.updateShape();
+    }
 
     std::string txt = "";
 
-    for (auto const &c : cars) {
-            window.draw(c.getChassisShape());
+    for (auto const& c : cars) {
+        window.draw(c.getChassisShape());
 
-            for (auto const &wheel: c.getWheelShapes())
-                window.draw(wheel);
+        for (auto const& wheel: c.getWheelShapes())
+            window.draw(wheel);
 
-            txt += std::to_string(c.getBody()->GetPosition().x);
-            txt += '\n';
-        }
+        txt += std::to_string(c.getBody()->GetPosition().x);
+        txt += '\n';
+    }
     return txt;
 }
 
-void Application::drawRankingAndInfo(int curGeneration, float record, const std::string &txt)  {
+void Application::drawRankingAndInfo(int curGeneration, float record, const std::string& txt) {
 
     ranking.setString(txt);
     ranking.setPosition(view.getCenter().x - view.getSize().x / 2,
@@ -135,7 +136,7 @@ void Application::drawRankingAndInfo(int curGeneration, float record, const std:
     sf::FloatRect infoRect = info.getLocalBounds();
 
     info.setOrigin(infoRect.left + infoRect.width / 0.9f,
-                       infoRect.top - infoRect.height / 2.0f);
+                   infoRect.top - infoRect.height / 2.0f);
     info.setPosition(view.getCenter().x + view.getSize().x / 2,
                      view.getCenter().y - view.getSize().y / 2);
     info.setCharacterSize(12);
@@ -146,10 +147,10 @@ void Application::drawRankingAndInfo(int curGeneration, float record, const std:
     window.draw(info);
 }
 
-void Application::newGeneration(int &curGeneration, float &record) {
+void Application::newGeneration(int& curGeneration, float& record) {
     auto globalFurthestCar = max_element(cars.begin(), cars.end(), [](Vehicle& a, Vehicle& b) -> bool {
-                                                   return a.getBody()->GetPosition().x < b.getBody()->GetPosition().x;
-            });
+        return a.getBody()->GetPosition().x < b.getBody()->GetPosition().x;
+    });
     sf::RectangleShape recordMark(sf::Vector2f(7, 2 * view.getSize().y));
     recordMark.setPosition(globalFurthestCar->getChassisShape().getPosition() + sf::Vector2f(0, -view.getSize().y));
     sf::Color fc = globalFurthestCar->getChassisShape().getFillColor();
@@ -160,12 +161,12 @@ void Application::newGeneration(int &curGeneration, float &record) {
     std::cerr << std::endl;
 
     auto best = *max_element(cars.begin(), cars.end(),
-                             [](const Vehicle &c1, const Vehicle &c2) {
-                                              return c1.getBody()->GetPosition().x < c2.getBody()->GetPosition().x;
-                                          });
+                             [](const Vehicle& c1, const Vehicle& c2) {
+                                 return c1.getBody()->GetPosition().x < c2.getBody()->GetPosition().x;
+                             });
     if (best.getBody()->GetPosition().x > record) {
-                record = best.getBody()->GetPosition().x;
-            }
+        record = best.getBody()->GetPosition().x;
+    }
 
     for (size_t i = 0; i < cars.size(); ++i) {
         fitness[i] = computeFitness(cars[i]);
@@ -180,7 +181,7 @@ void Application::newGeneration(int &curGeneration, float &record) {
 }
 
 
-float Application::computeFitness(const Vehicle &car) {
+float Application::computeFitness(const Vehicle& car) {
     auto dist = car.getBody()->GetPosition().x;
     if (dist < 20.0) { return 0.0f; }
     return dist;

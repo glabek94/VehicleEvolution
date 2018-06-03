@@ -21,3 +21,6 @@ target_link_libraries(VehicleEvolution ${LIBBOX2D})
 target_link_libraries(VehicleEvolution ${LIBSFML-GRAPHICS})
 target_link_libraries(VehicleEvolution ${LIBSFML-WINDOW})
 target_link_libraries(VehicleEvolution ${LIBSFML-SYSTEM})
+
+file(COPY ../res/arial.ttf
+        DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

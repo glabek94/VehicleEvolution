@@ -12,7 +12,7 @@ GroundFactory::GroundFactory() : previousChainEnd{0, 0} {
 /*
  * At the first use world can't be null.
  */
-GroundFactory &GroundFactory::getInstance() {
+GroundFactory& GroundFactory::getInstance() {
     static GroundFactory instance;
     return instance;
 }

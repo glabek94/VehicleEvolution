@@ -9,30 +9,6 @@
 #include "EvolutionaryAlgorithm.h"
 #include <algorithm>
 
-
-//struct VehicleTestFixture{
-//    VehicleTestFixture(int vehicleNumber, int wheelsNumber){
-//        //generate new generation
-//        EvolutionaryAlgorithm algo(vehicleNumber, wheelsNumber, 0.1f);
-//
-//        //fill chromosomes
-//        std::copy(algo.GetCurrentGeneration().begin(),
-//                  algo.GetCurrentGeneration().end(),
-//                  chromosomes.begin());
-//
-//        //fill vehicles
-//        std::copy(chromosomes.begin(),
-//                  chromosomes.end(),
-//                  vehicles.begin());
-//    }
-//
-//    std::vector<Chromosome> chromosomes;
-//    std::vector<Vehicle> vehicles;
-//
-//};
-
-
-
 BOOST_AUTO_TEST_SUITE(vehicle_tests_suite)
 
     BOOST_AUTO_TEST_CASE(check_if_deleteBody_deletes_b2Body) {
@@ -141,8 +117,7 @@ BOOST_AUTO_TEST_SUITE(vehicle_tests_suite)
 
     BOOST_AUTO_TEST_CASE(check_if_chromosme_has_proper_size) {
         EvolutionaryAlgorithm algo(10, 2, 0.05);
-        for(const auto& chromo : algo.GetCurrentGeneration())
-        {
+        for (const auto& chromo : algo.GetCurrentGeneration()) {
             BOOST_CHECK_EQUAL(chromo.getBodyVertices().size(), Chromosome::VERTICES_NUMBER);
             BOOST_CHECK_EQUAL(chromo.getWheelVertices().size(), Chromosome::WHEELS_NUMBER);
             BOOST_CHECK_EQUAL(chromo.getWheelSizes().size(), Chromosome::WHEELS_NUMBER);

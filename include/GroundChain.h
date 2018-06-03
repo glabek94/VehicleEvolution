@@ -1,5 +1,5 @@
 //
-// Created by ccc on 5/13/18.
+// Created by Dawid Glab and Michal Sokolski on 13.05.18.
 //
 
 #ifndef PROJECT_GROUND_H
@@ -30,7 +30,7 @@ private:
 
 public:
 
-    GroundChain( std::vector<sf::Vector2f>& verts);
+    GroundChain(std::vector<sf::Vector2f>& verts);
 
 
     const sf::VertexArray& getShapes() const;

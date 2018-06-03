@@ -1,5 +1,5 @@
 //
-// Created by dawid on 27.04.18.
+// Created by Dawid Glab and Michal Sokolski on 27.04.18.
 //
 
 #ifndef VEHICLEEVOLUTION_VEHICLE_H

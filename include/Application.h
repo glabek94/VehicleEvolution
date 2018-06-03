@@ -1,5 +1,5 @@
 //
-// Created by dawid on 27.04.18.
+// Created by Dawid Glab and Michal Sokolski on 27.04.18.
 //
 
 #ifndef VEHICLEEVOLUTION_APPLICATION_H
@@ -38,14 +38,15 @@ private:
     sf::Text info;
 public:
     void run();
+
     Application();
 
 private:
-    float computeFitness(const Vehicle &car);
+    float computeFitness(const Vehicle& car);
 
-    void newGeneration(int &curGeneration, float &record);
+    void newGeneration(int& curGeneration, float& record);
 
-    void drawRankingAndInfo(int curGeneration, float record, const std::string &txt);
+    void drawRankingAndInfo(int curGeneration, float record, const std::string& txt);
 
     std::string drawCars();
 };

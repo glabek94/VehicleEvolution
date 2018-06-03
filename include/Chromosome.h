@@ -1,5 +1,5 @@
 //
-// Created by dawid on 07.05.18.
+// Created by Dawid Glab and Michal Sokolski on 07.05.18.
 //
 
 #ifndef PROJECT_CHROMOSOME_H

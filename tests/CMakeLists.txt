@@ -15,15 +15,15 @@ find_library(LIBSFML-GRAPHICS sfml-graphics ../lib)
 find_library(LIBSFML-WINDOW sfml-window ../lib)
 find_library(LIBSFML-SYSTEM sfml-system ../lib)
 
-#find_library(LIBBOX2D Box2D ${CMAKE_SOURCE_DIR}/lib)
-#find_library(LIBSFML-GRAPHICS NAMES sfml-graphics PATHS "${CMAKE_SOURCE_DIR}/lib/libsfml-graphics.so" NO_DEFAULT_PATH)
-#find_library(LIBSFML-WINDOW sfml-window PATHS ${CMAKE_SOURCE_DIR}/lib NO_CMAKE_SYSTEM_PATH)
-#find_library(LIBSFML-SYSTEM sfml-system PATHS ${CMAKE_SOURCE_DIR}/lib NO_CMAKE_SYSTEM_PATH)
-
-
 # creates the executable
 add_executable(vehicle_tests VehicleTests.cpp ${VehicleEvolutionSrc})
 
+# for code coverage
+SET(GCC_COVERAGE_COMPILE_FLAGS "-fprofile-arcs -ftest-coverage")
+SET(GCC_COVERAGE_LINK_FLAGS "-lgcov")
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
 
 target_include_directories(vehicle_tests PRIVATE ${Boost_INCLUDE_DIRS} PUBLIC ../include/)
 
@@ -31,11 +31,6 @@ target_link_libraries(vehicle_tests ${LIBBOX2D})
 target_link_libraries(vehicle_tests ${LIBSFML-GRAPHICS})
 target_link_libraries(vehicle_tests ${LIBSFML-WINDOW})
 target_link_libraries(vehicle_tests ${LIBSFML-SYSTEM})
-
-#target_link_libraries(vehicle_tests PUBLIC "${LIBBOX2D}")
-#target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-graphics.so")
-#target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-window.so")
-#target_link_libraries(vehicle_tests PUBLIC "${CMAKE_SOURCE_DIR}/lib/libsfml-system.so")
 
 # declares a test with our executable
 add_test(NAME VehicleTests COMMAND vehicle_tests)

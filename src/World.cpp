@@ -5,12 +5,11 @@
 #include "World.h"
 
 World::World() : gravity{0.f, 9.8f}, world{gravity} {
-    //world.SetAllowSleeping(true);
 }
 
 //singleton
 World& World::getInstance() {
-    static  World instance;
+    static World instance;
     return instance;
 }
 
@@ -32,16 +31,16 @@ b2Body* World::createDynamicBody(float32 x, float32 y) {
 b2WheelJoint* World::createWheelJoint(b2Body* bodyA,
                                       b2Body* bodyB,
                                       const b2Vec2& anchor,
-                                      const b2Vec2& axis){
+                                      const b2Vec2& axis) {
 
     b2WheelJointDef wheelJointDef;
     wheelJointDef.Initialize(bodyA, bodyB, anchor, axis);
     //fill with deafault values defined in header
-    wheelJointDef.motorSpeed =      defaultMotorSpeed;
-    wheelJointDef.maxMotorTorque =  defaultMaxMotorTorque;
-    wheelJointDef.enableMotor =     defaultEnableMotor;
-    wheelJointDef.frequencyHz =     defaultFrequencyHz;
-    wheelJointDef.dampingRatio =    defaultDampingRatio;
+    wheelJointDef.motorSpeed = defaultMotorSpeed;
+    wheelJointDef.maxMotorTorque = defaultMaxMotorTorque;
+    wheelJointDef.enableMotor = defaultEnableMotor;
+    wheelJointDef.frequencyHz = defaultFrequencyHz;
+    wheelJointDef.dampingRatio = defaultDampingRatio;
     return dynamic_cast<b2WheelJoint*> (world.CreateJoint(&wheelJointDef));
 }
 
@@ -49,11 +48,11 @@ void World::step(float timeStep, int velocityIterations, int positionIterations)
     world.Step(timeStep, velocityIterations, positionIterations);
 }
 
-void World::destroyBody(b2Body *body) {
+void World::destroyBody(b2Body* body) {
     world.DestroyBody(body);
 }
 
-void World::destroyJoint(b2Joint *joint) {
+void World::destroyJoint(b2Joint* joint) {
     world.DestroyJoint(joint);
 }
 

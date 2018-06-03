@@ -1,5 +1,5 @@
 //
-// Created by ccc on 5/13/18.
+// Created by Dawid Glab and Michal Sokolski on 13.05.18.
 //
 
 #ifndef PROJECT_GROUNDFACTORY_H
@@ -30,9 +30,9 @@ private:
      */
     GroundFactory();
 
-    GroundFactory(const GroundFactory &) = delete;
+    GroundFactory(const GroundFactory&) = delete;
 
-    GroundFactory &operator=(const GroundFactory &) = delete;
+    GroundFactory& operator=(const GroundFactory&) = delete;
 
 
     /*
@@ -58,7 +58,7 @@ private:
     std::shared_ptr<GroundChain> previousChain;
 
 public:
-    static GroundFactory &getInstance();
+    static GroundFactory& getInstance();
 
     std::shared_ptr<GroundChain> createGround();
 

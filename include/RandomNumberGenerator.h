@@ -1,5 +1,5 @@
 //
-// Created by dawid on 20.05.18.
+// Created by Dawid Glab and Michal Sokolski on 20.05.18.
 //
 
 #ifndef PROJECT_RANDOMNUMBERGENERATOR_H

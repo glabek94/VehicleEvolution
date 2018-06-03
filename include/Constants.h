@@ -1,5 +1,5 @@
 //
-// Created by ccc on 5/13/18.
+// Created by Dawid Glab and Michal Sokolski 13.05.18.
 //
 
 #ifndef PROJECT_CONSTANTS_H
